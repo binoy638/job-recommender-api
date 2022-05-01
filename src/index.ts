@@ -6,6 +6,8 @@ import morgan from 'morgan';
 
 import logger from './config/logger';
 import connectMongo from './config/mongo';
+import errorHandler from './middlewares/errorHandler';
+import notFoundHandler from './middlewares/notFoundHandler';
 
 dotenv.config();
 
@@ -18,6 +20,8 @@ app.use(helmet());
 app.use(morgan('tiny'));
 app.use(cors());
 app.use(express.json());
+app.use(notFoundHandler);
+app.use(errorHandler);
 
 app.get('/', (req: Request, res: Response) => {
   res.send({
@@ -26,6 +30,10 @@ app.get('/', (req: Request, res: Response) => {
 });
 
 app.listen(PORT, async () => {
-  await connectMongo();
-  logger.info(`Listening at http://localhost:${PORT}`);
+  try {
+    await connectMongo();
+    logger.info(`Listening at http://localhost:${PORT}`);
+  } catch (error) {
+    logger.error(error);
+  }
 });

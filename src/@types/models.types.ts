@@ -5,6 +5,15 @@ export interface Address {
   country: string;
 }
 
+export interface User {
+  _id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  phone: string;
+}
+
 export interface Organisation {
   name: string;
   description: string;
@@ -14,26 +23,22 @@ export interface Organisation {
   address: Address;
 }
 
-export interface Employer {
-  _id: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  password: string;
-  phone: string;
+export interface Employer extends User {
   organisation: Organisation;
 }
 
-export interface JobSeeker {
-  _id: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  password: string;
-  phone: string;
+export interface Education {
+  degree: string;
+  institute: string;
+  startYear: number;
+  endYear: number;
+  percentage: number;
+}
+
+export interface JobSeeker extends User {
   address: Address;
+  education: Education[];
   // TODO: convert to objects
-  education: string;
   experience: string;
   skills: string;
   jobPreferences: string;

@@ -30,6 +30,7 @@ module.exports = {
     'import/extensions': 'off',
     'import/no-unresolved': 'error',
     'unicorn/prevent-abbreviations': 'off',
+    'unicorn/filename-case': 'off',
     'no-console': 'off',
     'simple-import-sort/imports': 'error',
     'simple-import-sort/exports': 'error',
