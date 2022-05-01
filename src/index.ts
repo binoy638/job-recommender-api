@@ -8,6 +8,7 @@ import logger from './config/logger';
 import connectMongo from './config/mongo';
 import errorHandler from './middlewares/errorHandler';
 import notFoundHandler from './middlewares/notFoundHandler';
+import employerRouter from './routers/employer.router';
 
 dotenv.config();
 
@@ -20,8 +21,9 @@ app.use(helmet());
 app.use(morgan('tiny'));
 app.use(cors());
 app.use(express.json());
-app.use(notFoundHandler);
-app.use(errorHandler);
+
+//* regsiter routers
+app.use('/api/employer', employerRouter);
 
 app.get('/', (req: Request, res: Response) => {
   res.send({
@@ -37,3 +39,6 @@ app.listen(PORT, async () => {
     logger.error(error);
   }
 });
+
+app.use(notFoundHandler);
+app.use(errorHandler);
