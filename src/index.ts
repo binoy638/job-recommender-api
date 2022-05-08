@@ -6,8 +6,8 @@ import morgan from 'morgan';
 
 import logger from './config/logger';
 import connectMongo from './config/mongo';
-import errorHandler from './middlewares/errorHandler';
-import notFoundHandler from './middlewares/notFoundHandler';
+import errorHandler from './middlewares/errorHandler.middleware';
+import notFoundHandler from './middlewares/notFoundHandler.middleware';
 import employerRouter from './routers/employer.router';
 
 dotenv.config();
