@@ -11,6 +11,7 @@ export const validator =
       if (requestPayload.body) await requestPayload.body.validate(req.body);
       if (requestPayload.query) await requestPayload.query.validate(req.query);
       if (requestPayload.params) await requestPayload.params.validate(req.params);
+      next();
     } catch (error) {
       logger.error(error);
       next(boom.badRequest('Invalid request payload'));
