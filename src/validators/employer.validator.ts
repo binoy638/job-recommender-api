@@ -30,3 +30,12 @@ export const employerRegisterValidator: RequestPayload = {
   query: undefined,
   params: undefined,
 };
+
+export const employerLoginValidator: RequestPayload = {
+  body: Yup.object().shape({
+    email: Yup.string().email().required(),
+    password: Yup.string().min(6).required(),
+  }),
+  query: undefined,
+  params: undefined,
+};

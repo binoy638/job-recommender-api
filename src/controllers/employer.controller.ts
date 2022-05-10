@@ -11,12 +11,17 @@ export const register = async (req: Request, res: Response, next: NextFunction):
     if (existingEmployer) {
       res.status(400).send({ message: 'Employer already exists' });
     } else {
-      const NewEmployer = await EmployerModel.create(body);
-      logger.debug(`Employer ${NewEmployer.email} registered`);
+      const newEmployer = await EmployerModel.create(body);
+      logger.debug(`Employer registered :${JSON.stringify(newEmployer)}`);
       res.status(201).send({ message: 'Employer created' });
     }
   } catch (error) {
     logger.error(error);
     next(boom.internal('Internal server error'));
   }
+};
+
+export const login = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  const { body } = req;
+  res.send({ body });
 };

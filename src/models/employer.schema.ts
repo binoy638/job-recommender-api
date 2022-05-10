@@ -1,3 +1,4 @@
+import Bcrypt from 'bcrypt';
 import { model, Schema } from 'mongoose';
 
 import { Address, Employer, Organisation } from '../@types/models.types';
@@ -29,5 +30,14 @@ const employerSchema = new Schema<Employer>(
   },
   { timestamps: true }
 );
+
+employerSchema.pre('save', async function (next) {
+  if (!this.isModified('password')) {
+    return next();
+  }
+  const salt = await Bcrypt.genSalt(10);
+  this.password = await Bcrypt.hash(this.password, salt);
+  return next();
+});
 
 export const EmployerModel = model<Employer>('Employer', employerSchema);
