@@ -7,6 +7,6 @@ import { employerLoginValidator, employerRegisterValidator } from '../validators
 const employerRouter = Router();
 
 employerRouter.post('/register', validator(employerRegisterValidator), EmployerController.register);
-// employerRouter.post('/login', validator(employerLoginValidator), EmployerController.login);
+employerRouter.post('/login', validator(employerLoginValidator), EmployerController.login);
 
 export default employerRouter;

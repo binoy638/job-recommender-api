@@ -1,16 +1,22 @@
+/* eslint-disable @typescript-eslint/ban-types */
 import Bcrypt from 'bcrypt';
-import { model, Schema } from 'mongoose';
+import { Model, model, Schema } from 'mongoose';
 
-import { Address, Employer, Organisation } from '../@types/models.types';
+import { IAddress, IEmployer, IOrganisation } from '../@types/models.types';
 
-const addressSchema = new Schema<Address>({
+// extend the Model interface with a static method to validate a employer
+interface EmployerModel extends Model<IEmployer> {
+  validateEmployer(email: string, password: string): Promise<IEmployer | undefined>;
+}
+
+const addressSchema = new Schema<IAddress>({
   city: { type: String, required: true },
   state: { type: String, required: true },
   zip: { type: String, required: true },
   country: { type: String, required: true },
 });
 
-const organisationSchema = new Schema<Organisation>({
+const organisationSchema = new Schema<IOrganisation>({
   name: { type: String, required: true },
   description: { type: String, required: true },
   yearFounded: { type: Number, required: true },
@@ -19,7 +25,7 @@ const organisationSchema = new Schema<Organisation>({
   address: { type: addressSchema, required: true },
 });
 
-const employerSchema = new Schema<Employer>(
+const employerSchema = new Schema<IEmployer, EmployerModel>(
   {
     firstName: { type: String, required: true },
     lastName: { type: String, required: true },
@@ -31,6 +37,7 @@ const employerSchema = new Schema<Employer>(
   { timestamps: true }
 );
 
+// This function runs when new employer is created to hash the password
 employerSchema.pre('save', async function (next) {
   if (!this.isModified('password')) {
     return next();
@@ -40,4 +47,16 @@ employerSchema.pre('save', async function (next) {
   return next();
 });
 
-export const EmployerModel = model<Employer>('Employer', employerSchema);
+// Helper function to validate a employer
+employerSchema.static('validateEmployer', async function (email: string, password: string): Promise<
+  IEmployer | undefined
+> {
+  const employer = await this.findOne({ email }).lean();
+  if (!employer) return;
+  const isPasswordValid = await Bcrypt.compare(password, employer.password);
+  if (!isPasswordValid) return;
+  // eslint-disable-next-line consistent-return
+  return employer;
+});
+
+export const Employer = model<IEmployer, EmployerModel>('Employer', employerSchema);

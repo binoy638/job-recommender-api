@@ -31,6 +31,7 @@ module.exports = {
     'import/no-unresolved': 'error',
     'unicorn/prevent-abbreviations': 'off',
     'unicorn/filename-case': 'off',
+    'no-underscore-dangle': 'off',
     'func-names': 'off',
     'no-console': 'off',
     'simple-import-sort/imports': 'error',
