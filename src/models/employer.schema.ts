@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable consistent-return */
 /* eslint-disable @typescript-eslint/ban-types */
 import Bcrypt from 'bcrypt';
 import { Model, model, Schema } from 'mongoose';
@@ -55,8 +57,9 @@ employerSchema.static('validateEmployer', async function (email: string, passwor
   if (!employer) return;
   const isPasswordValid = await Bcrypt.compare(password, employer.password);
   if (!isPasswordValid) return;
-  // eslint-disable-next-line consistent-return
-  return employer;
+  // remove password field before returning
+  const { password: _, ...employerDetails } = employer;
+  return employerDetails as IEmployer;
 });
 
 export const Employer = model<IEmployer, EmployerModel>('Employer', employerSchema);

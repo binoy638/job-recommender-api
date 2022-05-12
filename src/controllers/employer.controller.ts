@@ -30,8 +30,6 @@ export const login = async (req: Request, res: Response, next: NextFunction): Pr
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const token = jwt.sign({ _id: employer._id }, process.env.JWT_SECRET!);
 
-      delete employer.password;
-
       res.status(200).send({ token, user: employer });
     } else {
       next(boom.unauthorized('Invalid email or password'));
