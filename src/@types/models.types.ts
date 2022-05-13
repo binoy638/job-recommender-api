@@ -31,6 +31,7 @@ export interface IOrganisation {
 
 export interface IEmployer extends IUser {
   organisation: IOrganisation;
+  verified: boolean;
 }
 
 export interface IEducation {

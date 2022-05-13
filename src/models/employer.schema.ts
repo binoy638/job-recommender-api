@@ -8,7 +8,7 @@ import { IAddress, IEmployer, IOrganisation } from '../@types/models.types';
 
 // extend the Model interface with a static method to validate a employer
 interface EmployerModel extends Model<IEmployer> {
-  validateEmployer(email: string, password: string): Promise<IEmployer | undefined>;
+  validateEmployer(email: string, password: string): Promise<Omit<IEmployer, 'password'> | undefined>;
 }
 
 const addressSchema = new Schema<IAddress>({
@@ -35,6 +35,7 @@ const employerSchema = new Schema<IEmployer, EmployerModel>(
     password: { type: String, required: true },
     phone: { type: String },
     organisation: { type: organisationSchema, required: true },
+    verified: { type: Boolean, default: false },
   },
   { timestamps: true }
 );
@@ -51,7 +52,7 @@ employerSchema.pre('save', async function (next) {
 
 // Helper function to validate a employer
 employerSchema.static('validateEmployer', async function (email: string, password: string): Promise<
-  IEmployer | undefined
+  Omit<IEmployer, 'password'> | undefined
 > {
   const employer = await this.findOne({ email }).lean();
   if (!employer) return;
@@ -59,7 +60,7 @@ employerSchema.static('validateEmployer', async function (email: string, passwor
   if (!isPasswordValid) return;
   // remove password field before returning
   const { password: _, ...employerDetails } = employer;
-  return employerDetails as IEmployer;
+  return employerDetails;
 });
 
 export const Employer = model<IEmployer, EmployerModel>('Employer', employerSchema);

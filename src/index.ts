@@ -26,9 +26,8 @@ app.use(express.json());
 app.use('/api/employer', employerRouter);
 
 app.get('/', (req: Request, res: Response) => {
-  res.send({
-    message: 'Hello Worlds',
-  });
+  //! check for env file here
+  res.sendStatus(200);
 });
 
 app.listen(PORT, async () => {

@@ -27,8 +27,7 @@ export const login = async (req: Request, res: Response, next: NextFunction): Pr
   try {
     const employer = await Employer.validateEmployer(email, password);
     if (employer) {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const token = jwt.sign({ _id: employer._id }, process.env.JWT_SECRET!);
+      const token = jwt.sign({ _id: employer._id }, process.env.JWT_SECRET || '');
 
       res.status(200).send({ token, user: employer });
     } else {
