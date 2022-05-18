@@ -29,6 +29,7 @@ const organisationSchema = new Schema<IOrganisation>({
 
 const employerSchema = new Schema<IEmployer, EmployerModel>(
   {
+    employerId: { type: Number, required: true, unique: true },
     firstName: { type: String, required: true },
     lastName: { type: String, required: true },
     email: { type: String, required: true },
@@ -54,7 +55,7 @@ employerSchema.pre('save', async function (next) {
 employerSchema.static('validateEmployer', async function (email: string, password: string): Promise<
   Omit<IEmployer, 'password'> | undefined
 > {
-  const employer = await this.findOne({ email }).lean();
+  const employer = await this.findOne({ email }).lean(true);
   if (!employer) return;
   const isPasswordValid = await Bcrypt.compare(password, employer.password);
   if (!isPasswordValid) return;

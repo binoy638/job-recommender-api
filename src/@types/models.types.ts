@@ -30,6 +30,7 @@ export interface IOrganisation {
 }
 
 export interface IEmployer extends IUser {
+  employerId: number;
   organisation: IOrganisation;
   verified: boolean;
 }
@@ -40,6 +41,14 @@ export interface IEducation {
   startYear: number;
   endYear: number;
   percentage: number;
+}
+
+export interface IJob {
+  title: string;
+  company: string;
+  startDate: string;
+  endDate: string;
+  description: string;
 }
 
 export interface IJobSeeker extends IUser {
