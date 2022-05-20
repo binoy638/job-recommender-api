@@ -1,24 +1,27 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable consistent-return */
 /* eslint-disable @typescript-eslint/ban-types */
-import Bcrypt from 'bcrypt';
-import { Model, model, Schema } from 'mongoose';
+import { Document, Model, model, Schema } from 'mongoose';
 
-import { IAddress, IEmployer, IOrganisation } from '../@types/models.types';
+import { Address, EmployerAttrs, Organisation } from '../@types/models.types';
+import { Password } from '../services/password';
+
+interface EmployerDoc extends EmployerAttrs, Document {}
 
 // extend the Model interface with a static method to validate a employer
-interface EmployerModel extends Model<IEmployer> {
-  validateEmployer(email: string, password: string): Promise<Omit<IEmployer, 'password'> | undefined>;
+interface EmployerModel extends Model<EmployerDoc> {
+  validateEmployer(email: string, password: string): Promise<Omit<EmployerDoc, 'password'> | undefined>;
+  build(employerData: EmployerAttrs): EmployerDoc;
 }
 
-const addressSchema = new Schema<IAddress>({
+const addressSchema = new Schema<Address>({
   city: { type: String, required: true },
   state: { type: String, required: true },
   zip: { type: String, required: true },
   country: { type: String, required: true },
 });
 
-const organisationSchema = new Schema<IOrganisation>({
+const organisationSchema = new Schema<Organisation>({
   name: { type: String, required: true },
   description: { type: String, required: true },
   yearFounded: { type: Number, required: true },
@@ -27,7 +30,7 @@ const organisationSchema = new Schema<IOrganisation>({
   address: { type: addressSchema, required: true },
 });
 
-const employerSchema = new Schema<IEmployer, EmployerModel>(
+const employerSchema = new Schema<EmployerDoc>(
   {
     employerId: { type: Number, required: true, unique: true },
     firstName: { type: String, required: true },
@@ -46,22 +49,26 @@ employerSchema.pre('save', async function (next) {
   if (!this.isModified('password')) {
     return next();
   }
-  const salt = await Bcrypt.genSalt(10);
-  this.password = await Bcrypt.hash(this.password, salt);
+
+  this.password = await Password.toHash(this.password);
   return next();
 });
 
 // Helper function to validate a employer
 employerSchema.static('validateEmployer', async function (email: string, password: string): Promise<
-  Omit<IEmployer, 'password'> | undefined
+  Omit<EmployerDoc, 'password'> | undefined
 > {
   const employer = await this.findOne({ email }).lean(true);
   if (!employer) return;
-  const isPasswordValid = await Bcrypt.compare(password, employer.password);
+  const isPasswordValid = await Password.compare(password, employer.password);
   if (!isPasswordValid) return;
   // remove password field before returning
   const { password: _, ...employerDetails } = employer;
   return employerDetails;
 });
 
-export const Employer = model<IEmployer, EmployerModel>('Employer', employerSchema);
+employerSchema.static('build', function (employerData: EmployerAttrs) {
+  return new this(employerData);
+});
+
+export const Employer = model<EmployerDoc, EmployerModel>('Employer', employerSchema);

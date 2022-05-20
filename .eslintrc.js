@@ -36,6 +36,7 @@ module.exports = {
     'no-console': 'off',
     'simple-import-sort/imports': 'error',
     'simple-import-sort/exports': 'error',
+    'unicorn/no-static-only-class': 'off',
   },
   settings: {
     'import/parsers': {

@@ -1,41 +1,42 @@
-export interface IAdmin {
+export interface Admin {
   username: string;
   email: string;
   password: string;
 }
 
-export interface IAddress {
+export interface Address {
   city: string;
   state: string;
   zip: string;
   country: string;
 }
 
-export interface IUser {
-  _id: string;
+export interface User {
   firstName: string;
   lastName: string;
   email: string;
   password: string;
   phone: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
-export interface IOrganisation {
+export interface Organisation {
   name: string;
   description: string;
   yearFounded: number;
   website: string;
   logo: string;
-  address: IAddress;
+  address: Address;
 }
 
-export interface IEmployer extends IUser {
+export interface EmployerAttrs extends User {
   employerId: number;
-  organisation: IOrganisation;
+  organisation: Organisation;
   verified: boolean;
 }
 
-export interface IEducation {
+export interface Education {
   degree: string;
   institute: string;
   startYear: number;
@@ -43,17 +44,16 @@ export interface IEducation {
   percentage: number;
 }
 
-export interface IJob {
+export interface JobAttrs {
+  jobId: number;
   title: string;
-  company: string;
-  startDate: string;
-  endDate: string;
+  employer: string;
   description: string;
 }
 
-export interface IJobSeeker extends IUser {
-  address: IAddress;
-  education: IEducation[];
+export interface JobSeeker extends User {
+  address: Address;
+  education: Education[];
   // TODO: convert to objects
   experience: string;
   skills: string;
