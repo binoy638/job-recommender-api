@@ -20,7 +20,7 @@ export const register = async (req: Request, res: Response, next: NextFunction):
       const newEmployer = Employer.build(newEmployerInfo);
       await newEmployer.save();
       logger.debug(`Employer registered :${JSON.stringify(newEmployer)}`);
-      res.status(201).send({ message: 'Employer created' });
+      res.status(201).send(newEmployer);
     }
   } catch (error) {
     logger.error(error);
@@ -33,8 +33,11 @@ export const login = async (req: Request, res: Response, next: NextFunction): Pr
   try {
     const employer = await Employer.validateEmployer(email, password);
     if (employer) {
-      const token = jwt.sign({ id: employer.employerId }, process.env.JWT_SECRET || '');
-      res.status(200).send({ token, user: employer });
+      const JWTtoken = jwt.sign({ id: employer.employerId }, process.env.JWT_SECRET || '');
+      req.session = {
+        jwt: JWTtoken,
+      };
+      res.status(200).send({ token: JWTtoken, user: employer });
     } else {
       next(boom.unauthorized('Invalid email or password'));
     }

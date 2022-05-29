@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable consistent-return */
 /* eslint-disable @typescript-eslint/ban-types */
@@ -41,7 +42,15 @@ const employerSchema = new Schema<EmployerDoc>(
     organisation: { type: organisationSchema, required: true },
     verified: { type: Boolean, default: false },
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+    toJSON: {
+      transform(doc, ret) {
+        delete ret.password;
+      },
+      versionKey: false,
+    },
+  }
 );
 
 // This function runs when new employer is created to hash the password
@@ -62,9 +71,7 @@ employerSchema.static('validateEmployer', async function (email: string, passwor
   if (!employer) return;
   const isPasswordValid = await Password.compare(password, employer.password);
   if (!isPasswordValid) return;
-  // remove password field before returning
-  const { password: _, ...employerDetails } = employer;
-  return employerDetails;
+  return employer;
 });
 
 employerSchema.static('build', function (employerData: EmployerAttrs) {

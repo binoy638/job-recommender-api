@@ -1,3 +1,4 @@
+import cookieSession from 'cookie-session';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import express, { Request, Response } from 'express';
@@ -21,13 +22,20 @@ app.use(helmet());
 app.use(morgan('tiny'));
 app.use(cors());
 app.use(express.json());
+app.use(
+  cookieSession({
+    //* avoid encrypting the cookies
+    signed: false,
+    //* https only cookies
+    secure: process.env.NODE_ENV === 'production',
+  })
+);
 
 //* regsiter routers
 app.use('/api/employer', employerRouter);
 
 app.get('/', (req: Request, res: Response) => {
-  //! check for env file here
-  res.sendStatus(200);
+  res.send({ message: 'Welcome to the Job Recommender API' });
 });
 
 app.listen(PORT, async () => {
@@ -39,5 +47,6 @@ app.listen(PORT, async () => {
   }
 });
 
+//* Error handler middleware
 app.use(notFoundHandler);
 app.use(errorHandler);
