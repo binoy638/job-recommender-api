@@ -1,3 +1,13 @@
+export enum UserType {
+  EMPLOYER = 'employer',
+  JOBSEEKER = 'jobseeker',
+  ADMIN = 'admin',
+}
+
+export enum RequestResponse {
+  INVALID_PAYLOAD = 'Invalid request payload',
+}
+
 export interface Admin {
   username: string;
   email: string;
