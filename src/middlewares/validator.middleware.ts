@@ -1,10 +1,12 @@
 import boom from '@hapi/boom';
 import { NextFunction, Request, Response } from 'express';
+import * as Yup from 'yup';
 
 import { RequestPayload } from '../@types';
 import { RequestResponse, UserType } from '../@types/models.types';
 import logger from '../config/logger';
-import { employerLoginValidator, employerRegisterValidator } from '../validators/employer.validator';
+import { employerValidator } from '../validators/employer.validator';
+import { jobseekerValidator } from '../validators/jobseeker.validator';
 
 export const payloadValidator =
   (requestPayload: RequestPayload) =>
@@ -20,30 +22,51 @@ export const payloadValidator =
     }
   };
 
-export const authValidator =
-  (
-    requestPayload: RequestPayload,
-    auth: { type: 'login' | 'registration'; user: UserType.EMPLOYER | UserType.JOBSEEKER }
-  ) =>
-  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    const { userType } = req.body;
-    if (!userType || userType !== UserType.EMPLOYER || userType !== UserType.JOBSEEKER) {
+export const loginValidator = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  try {
+    //* check if the request query contains the user type
+    await Yup.object()
+      .shape({
+        utype: Yup.string().oneOf([UserType.EMPLOYER, UserType.JOBSEEKER, UserType.ADMIN]).required(),
+      })
+      .validate(req.query);
+
+    //* check if the request body contains the email and password
+    await Yup.object()
+      .shape({
+        email: Yup.string().email().required(),
+        password: Yup.string().min(6).required(),
+      })
+      .validate(req.body);
+
+    next();
+  } catch (error) {
+    logger.error(error);
+    next(boom.badRequest(RequestResponse.INVALID_PAYLOAD));
+  }
+};
+
+export const registrationValidator = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  const utype = req.query.utype as UserType;
+  try {
+    //* check if utype is valid
+    const isUTypeValid = await Yup.string().oneOf([UserType.EMPLOYER, UserType.JOBSEEKER]).required().isValid(utype);
+
+    if (!isUTypeValid) {
       next(boom.badRequest(RequestResponse.INVALID_PAYLOAD));
       return;
     }
-    try {
-      if (auth.user === UserType.EMPLOYER && userType === UserType.EMPLOYER) {
-        if (auth.type === 'login' && employerLoginValidator.body) {
-          await employerLoginValidator.body.validate(req.body);
-        }
-        if (auth.type === 'registration' && employerRegisterValidator.body) {
-          await employerRegisterValidator.body.validate(req.body);
-        }
-      }
 
-      next();
-    } catch (error) {
-      logger.error(error);
-      next(boom.badRequest(RequestResponse.INVALID_PAYLOAD));
+    if (utype === UserType.EMPLOYER) {
+      await employerValidator.validate(req.body);
     }
-  };
+
+    if (utype === UserType.JOBSEEKER) {
+      await jobseekerValidator.validate(req.body);
+    }
+    next();
+  } catch (error) {
+    logger.error(error);
+    next(boom.badRequest(RequestResponse.INVALID_PAYLOAD));
+  }
+};

@@ -9,7 +9,7 @@ import logger from './config/logger';
 import connectMongo from './config/mongo';
 import errorHandler from './middlewares/errorHandler.middleware';
 import notFoundHandler from './middlewares/notFoundHandler.middleware';
-import employerRouter from './routers/employer.router';
+import authRouter from './routers/auth.router';
 
 dotenv.config();
 
@@ -32,7 +32,7 @@ app.use(
 );
 
 //* regsiter routers
-app.use('/api/employer', employerRouter);
+app.use('/api/auth', authRouter);
 
 app.get('/', (req: Request, res: Response) => {
   res.send({ message: 'Welcome to the Job Recommender API' });
