@@ -18,7 +18,7 @@
     "pre-commit": "npm run typecheck && lint-staged && jest"
   },
   "lint-staged": {
-    "src/**/*.{js,ts}": "eslint",
+    "src/**/*.{js,ts}": "eslint --fix",
     "**/*.{js,ts,json}": "prettier --write"
   },
   "keywords": [],

@@ -1,6 +1,6 @@
 import { model, Schema } from 'mongoose';
 
-import { JobAttrs } from '../@types/models.types';
+import { JobAttrs } from '../@types/jobseeker.types';
 
 const jobSchema = new Schema<JobAttrs>({
   jobId: { type: Number, required: true, unique: true },

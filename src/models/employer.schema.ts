@@ -4,7 +4,8 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import { Document, Model, model, Schema } from 'mongoose';
 
-import { Address, EmployerAttrs, Organisation } from '../@types/models.types';
+import { Address } from '../@types';
+import { EmployerAttrs, Organisation } from '../@types/employer.types';
 import { Password } from '../services/password';
 
 interface EmployerDoc extends EmployerAttrs, Document {}

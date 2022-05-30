@@ -2,8 +2,7 @@ import boom from '@hapi/boom';
 import { NextFunction, Request, Response } from 'express';
 import * as Yup from 'yup';
 
-import { RequestPayload } from '../@types';
-import { RequestResponse, UserType } from '../@types/models.types';
+import { RequestPayload, RequestResponse, UserType } from '../@types';
 import logger from '../config/logger';
 import { employerValidator } from '../validators/employer.validator';
 import { jobseekerValidator } from '../validators/jobseeker.validator';
