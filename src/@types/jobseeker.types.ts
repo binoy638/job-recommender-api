@@ -1,4 +1,8 @@
-import { Address, JobCategory, Skill, User } from './index';
+import { Address, User } from './index';
+
+export interface JobCategory {
+  name: string;
+}
 
 export interface Education {
   degree: string;
@@ -16,19 +20,14 @@ export interface Experience {
   description: string;
 }
 
-export interface JobAttrs {
-  jobId: number;
-  title: string;
-  employer: string;
-  description: string;
-}
-
 export interface JobSeekerAttrs extends User {
   address: Address;
+  about: string;
   education: Education[];
   experience: Experience[];
-  skills: Skill[];
-  jobPreferences: JobCategory[];
-  //* store pdf url
+  //* store skill id's
+  skills: string[];
+  //* store jobcategory id's
+  jobPreferences: string[];
   resume: string;
 }

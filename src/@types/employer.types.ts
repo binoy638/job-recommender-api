@@ -13,4 +13,5 @@ export interface EmployerAttrs extends User {
   employerId: number;
   organisation: Organisation;
   verified: boolean;
+  banned: boolean;
 }

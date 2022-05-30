@@ -30,11 +30,7 @@ export interface Address {
   country: string;
 }
 
-export interface JobCategory {
-  name: string;
-}
-
-export interface Skill {
+export interface SkillAttrs {
   name: string;
   level: 'beginner' | 'intermediate' | 'advanced';
 }
