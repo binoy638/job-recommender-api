@@ -1,9 +1,5 @@
 import { Address, User } from './index';
 
-export interface JobCategory {
-  name: string;
-}
-
 export interface Education {
   degree: string;
   institute: string;

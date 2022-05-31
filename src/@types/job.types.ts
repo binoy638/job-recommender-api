@@ -1,3 +1,7 @@
+export interface JobCategoryAttrs {
+  jobCategoryId: number;
+  name: string;
+}
 export interface JobAttrs {
   id: number;
   title: string;

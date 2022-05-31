@@ -31,8 +31,8 @@ export interface Address {
 }
 
 export interface SkillAttrs {
+  skillId: number;
   name: string;
-  level: 'beginner' | 'intermediate' | 'advanced';
 }
 
 export interface RequestPayload {

@@ -1,10 +1,12 @@
-import { model, Schema } from 'mongoose';
+import { Document, model, Schema } from 'mongoose';
 
-import { SkillAttrs } from '../@types';
+import type { SkillAttrs } from '../@types';
 
-const skillSchema = new Schema<SkillAttrs>({
+interface SkillDoc extends SkillAttrs, Document {}
+
+const skillSchema = new Schema<SkillDoc>({
+  skillId: { type: Number, required: true, unique: true },
   name: { type: String, required: true },
-  level: { enum: ['beginner', 'intermediate', 'advanced'], required: true },
 });
 
-export const skill = model<SkillAttrs>('Skill', skillSchema);
+export const Skill = model<SkillDoc>('Skill', skillSchema);
