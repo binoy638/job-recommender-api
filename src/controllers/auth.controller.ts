@@ -5,8 +5,10 @@ import { customAlphabet } from 'nanoid';
 
 import { RequestResponse, UserType } from '../@types';
 import { EmployerAttrs } from '../@types/employer.types';
+import { JobSeekerAttrs } from '../@types/jobseeker.types';
 import logger from '../config/logger';
 import { Employer } from '../models/employer.schema';
+import { JobSeeker } from '../models/jobseeker.schema';
 
 const nanoid = customAlphabet('0123456789', 12);
 
@@ -18,23 +20,38 @@ export const register = async (req: Request, res: Response, next: NextFunction):
     return;
   }
 
-  const { body }: { body: Omit<EmployerAttrs, 'employerId'> } = req;
   try {
     if (utype === UserType.EMPLOYER) {
+      const { body }: { body: Omit<EmployerAttrs, 'employerId'> } = req;
       const existingEmployer = await Employer.findOne({ email: body.email });
       if (existingEmployer) {
         next(boom.badRequest('Employer already exists'));
-      } else {
-        const newEmployerInfo: EmployerAttrs = { ...body, employerId: Number(nanoid()) };
-        const newEmployer = Employer.build(newEmployerInfo);
-        await newEmployer.save();
-        logger.debug(`Employer registered :${JSON.stringify(newEmployer)}`);
-        res.status(201).send(newEmployer);
+        return;
       }
+      const newEmployerInfo: EmployerAttrs = { ...body, employerId: Number(nanoid()) };
+      const newEmployer = Employer.build(newEmployerInfo);
+      await newEmployer.save();
+      logger.debug(`Employer registered :${JSON.stringify(newEmployer)}`);
+      res.status(201).send(newEmployer);
+      return;
     }
     if (utype === UserType.JOBSEEKER) {
-      next(boom.badRequest('Admin registration not supported'));
+      const { body }: { body: Omit<JobSeekerAttrs, 'jobSeekerId'> } = req;
+
+      const existingJobSeeker = await JobSeeker.findOne({ email: body.email });
+      if (existingJobSeeker) {
+        next(boom.badRequest('JobSeeker already exists'));
+        return;
+      }
+      const newJobSeekerInfo: JobSeekerAttrs = { ...body, jobSeekerId: Number(nanoid()) };
+      const newJobSeeker = JobSeeker.build(newJobSeekerInfo);
+      await newJobSeeker.save();
+      logger.debug(`JobSeeker registered :${JSON.stringify(newJobSeeker)}`);
+      res.status(201).send(newJobSeeker);
+      return;
     }
+
+    next(boom.badRequest(RequestResponse.INVALID_PAYLOAD));
   } catch (error) {
     logger.error(error);
     next(boom.internal(RequestResponse.SERVER_ERROR));

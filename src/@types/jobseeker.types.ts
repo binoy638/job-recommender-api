@@ -16,13 +16,20 @@ export interface Experience {
   description: string;
 }
 
+export enum SkillLevel {
+  BEGINNER = 'Beginner',
+  INTERMEDIATE = 'Intermediate',
+  EXPERT = 'Expert',
+}
+
 export interface JobSeekerAttrs extends User {
+  jobSeekerId: number;
   address: Address;
   about: string;
   education: Education[];
   experience: Experience[];
   //* store skill id's
-  skills: string[];
+  skills: { skill: string; level: SkillLevel }[];
   //* store jobcategory id's
   jobPreferences: string[];
   resume: string;
