@@ -36,9 +36,9 @@ export interface SkillAttrs {
 }
 
 export interface RequestPayload {
-  body: Yup.ObjectSchema<any> | undefined;
-  query: Yup.ObjectSchema<any> | undefined;
-  params: Yup.ObjectSchema<any> | undefined;
+  body?: Yup.ObjectSchema<any> | undefined;
+  query?: Yup.ObjectSchema<any> | undefined;
+  params?: Yup.ObjectSchema<any> | undefined;
 }
 
 export enum RequestResponse {

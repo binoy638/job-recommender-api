@@ -41,7 +41,8 @@ const employerSchema = new Schema<EmployerDoc>(
     password: { type: String, required: true },
     phone: { type: String },
     organisation: { type: organisationSchema, required: true },
-    verified: { type: Boolean, default: false },
+    isVerified: { type: Boolean, default: false },
+    isBanned: { type: Boolean, default: false },
   },
   {
     timestamps: true,
