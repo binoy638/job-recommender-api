@@ -52,6 +52,7 @@ export const registrationValidator = async (req: Request, res: Response, next: N
     const isUTypeValid = await Yup.string().oneOf([UserType.EMPLOYER, UserType.JOBSEEKER]).required().isValid(utype);
 
     if (!isUTypeValid) {
+      logger.error('Invalid user type');
       next(boom.badRequest(RequestResponse.INVALID_PAYLOAD));
       return;
     }
@@ -65,6 +66,7 @@ export const registrationValidator = async (req: Request, res: Response, next: N
     }
     next();
   } catch (error) {
+    console.log('here');
     logger.error(error);
     next(boom.badRequest(RequestResponse.INVALID_PAYLOAD));
   }

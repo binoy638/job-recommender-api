@@ -53,11 +53,8 @@ const jobSeekerSchema = new Schema<JobSeekerDoc>(
     skills: {
       type: [
         {
-          skill: {
-            type: Schema.Types.ObjectId,
-            ref: 'Skill',
-          },
-          level: { enum: ['Beginner', 'Intermediate', 'Expert'], required: true },
+          type: Schema.Types.ObjectId,
+          ref: 'Skill',
         },
       ],
     },

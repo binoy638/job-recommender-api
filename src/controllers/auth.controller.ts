@@ -32,6 +32,10 @@ export const register = async (req: Request, res: Response, next: NextFunction):
       const newEmployer = Employer.build(newEmployerInfo);
       await newEmployer.save();
       logger.debug(`Employer registered :${JSON.stringify(newEmployer)}`);
+      const JWTtoken = jwt.sign({ id: newEmployer.employerId }, process.env.JWT_SECRET || '');
+      req.session = {
+        jwt: JWTtoken,
+      };
       res.status(201).send(newEmployer);
       return;
     }
@@ -47,6 +51,10 @@ export const register = async (req: Request, res: Response, next: NextFunction):
       const newJobSeeker = JobSeeker.build(newJobSeekerInfo);
       await newJobSeeker.save();
       logger.debug(`JobSeeker registered :${JSON.stringify(newJobSeeker)}`);
+      const JWTtoken = jwt.sign({ id: newJobSeeker.jobSeekerId }, process.env.JWT_SECRET || '');
+      req.session = {
+        jwt: JWTtoken,
+      };
       res.status(201).send(newJobSeeker);
       return;
     }
@@ -61,13 +69,13 @@ export const register = async (req: Request, res: Response, next: NextFunction):
 export const login = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const { email, password } = req.body;
   try {
-    const employer = await Employer.validateEmployer(email, password);
-    if (employer) {
-      const JWTtoken = jwt.sign({ id: employer.employerId }, process.env.JWT_SECRET || '');
+    const existingEmployer = await Employer.validateEmployer(email, password);
+    if (existingEmployer) {
+      const JWTtoken = jwt.sign({ id: existingEmployer.employerId }, process.env.JWT_SECRET || '');
       req.session = {
         jwt: JWTtoken,
       };
-      res.status(200).send({ token: JWTtoken, user: employer });
+      res.status(200).send({ user: existingEmployer });
     } else {
       next(boom.unauthorized('Invalid email or password'));
     }
