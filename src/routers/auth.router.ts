@@ -3,9 +3,10 @@ import { Router } from 'express';
 import * as authController from '../controllers/auth.controller';
 import { loginValidator, registrationValidator } from '../middlewares/validator.middleware';
 
-const employerRouter = Router();
+const authRouter = Router();
 
-employerRouter.post('/register', registrationValidator, authController.register);
-employerRouter.post('/login', loginValidator, authController.login);
+authRouter.post('/signup', registrationValidator, authController.signup);
+authRouter.post('/signin', loginValidator, authController.signin);
+authRouter.post('/signout', authController.signout);
 
-export default employerRouter;
+export default authRouter;

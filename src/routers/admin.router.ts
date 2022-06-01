@@ -1,8 +1,8 @@
 import { Router } from 'express';
+import * as Yup from 'yup';
 
 import * as adminController from '../controllers/admin.controller';
 import { payloadValidator } from '../middlewares/validator.middleware';
-import * as Yup from 'yup';
 
 const adminRouter = Router();
 

@@ -12,7 +12,7 @@ import { JobSeeker } from '../models/jobseeker.schema';
 
 const nanoid = customAlphabet('0123456789', 12);
 
-export const register = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+export const signup = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const utype = req.query.utype as UserType;
 
   if (utype !== UserType.EMPLOYER && utype !== UserType.JOBSEEKER) {
@@ -66,7 +66,7 @@ export const register = async (req: Request, res: Response, next: NextFunction):
   }
 };
 
-export const login = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+export const signin = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const { email, password } = req.body;
   try {
     const existingEmployer = await Employer.validateEmployer(email, password);
@@ -79,6 +79,17 @@ export const login = async (req: Request, res: Response, next: NextFunction): Pr
     } else {
       next(boom.unauthorized('Invalid email or password'));
     }
+  } catch (error) {
+    logger.error(error);
+    next(boom.internal(RequestResponse.SERVER_ERROR));
+  }
+};
+
+export const signout = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  try {
+    // eslint-disable-next-line unicorn/no-null
+    req.session = null;
+    res.send({});
   } catch (error) {
     logger.error(error);
     next(boom.internal(RequestResponse.SERVER_ERROR));

@@ -39,6 +39,7 @@ module.exports = {
     'simple-import-sort/imports': 'error',
     'simple-import-sort/exports': 'error',
     'unicorn/no-static-only-class': 'off',
+    '@typescript-eslint/no-namespace': 'off',
   },
   settings: {
     'import/parsers': {
