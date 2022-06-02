@@ -3,22 +3,22 @@
 ## Employer
 
 - [x]: Register an account
-- [x]: Login
+- []: Login
 - []: Add Jobs (only verified employer's jobs will be visible to jobseekers)
 - []: View Job Applications
 
 ## Admin
 
 - []: Login
-- []: Verify employer account
+- [x]: Verify employer account
 - []: Add job categories
 - []: Add skill types
-- []: Can ban employers
+- [x]: Can ban employers
 
 ## JobSeeker
 
 - [x]: Register an account
-- [x]: Login
+- []: Login
 - []: View Jobs
 - []: Apply for jobs
 - []: Upload resume as pdf (optional)
