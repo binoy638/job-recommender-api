@@ -1,3 +1,4 @@
+/* eslint-disable unicorn/no-null */
 /* eslint-disable sonarjs/no-duplicate-string */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import boom from '@hapi/boom';
@@ -124,11 +125,14 @@ export const signin = async (req: Request, res: Response, next: NextFunction): P
 
 export const signout = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    // eslint-disable-next-line unicorn/no-null
     req.session = null;
     res.send({});
   } catch (error) {
     logger.error(error);
     next(boom.internal(RequestResponse.SERVER_ERROR));
   }
+};
+
+export const getCurrentUser = async (req: Request, res: Response): Promise<void> => {
+  res.send({ currentUser: req?.currentUser || null });
 };

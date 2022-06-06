@@ -28,9 +28,9 @@ export const getCurrentUser = async (req: Request, res: Response, next: NextFunc
   try {
     const payload = jwt.verify(req.session.jwt, process.env.JWT_SECRET!) as UserPayload;
     req.currentUser = payload;
+    next();
   } catch (error) {
     logger.error(error);
     next(boom.unauthorized('Not authorized'));
   }
-  next();
 };
