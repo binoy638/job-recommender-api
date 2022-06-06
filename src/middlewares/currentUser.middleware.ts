@@ -3,10 +3,12 @@ import boom from '@hapi/boom';
 import { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 
+import { UserType } from '../@types';
 import logger from '../config/logger';
 
 interface UserPayload {
   id: string;
+  utype: UserType;
 }
 
 declare global {

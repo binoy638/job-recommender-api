@@ -67,24 +67,3 @@ export const addSKill = async (req: Request, res: Response, next: NextFunction):
     next(boom.internal(RequestResponse.SERVER_ERROR));
   }
 };
-
-//! need pagination support
-export const getJobCategories = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-  try {
-    const jobCategories = await JobCategory.find({}).lean();
-    res.send(jobCategories);
-  } catch (error) {
-    logger.error(error);
-    next(boom.internal(RequestResponse.SERVER_ERROR));
-  }
-};
-
-export const getSkills = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-  try {
-    const skills = await Skill.find({}).lean();
-    res.send(skills);
-  } catch (error) {
-    logger.error(error);
-    next(boom.internal(RequestResponse.SERVER_ERROR));
-  }
-};

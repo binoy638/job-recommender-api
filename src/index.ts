@@ -11,7 +11,9 @@ import connectMongo from './config/mongo';
 import errorHandler from './middlewares/errorHandler.middleware';
 import notFoundHandler from './middlewares/notFoundHandler.middleware';
 import { Admin } from './models/admin.schema';
+import adminRouter from './routers/admin.router';
 import authRouter from './routers/auth.router';
+import generalRouter from './routers/generalRouter';
 
 dotenv.config();
 
@@ -39,7 +41,9 @@ app.use(
 );
 
 //* regsiter routers
+app.use('/api', generalRouter);
 app.use('/api/auth', authRouter);
+app.use('/api/admin', adminRouter);
 
 app.get('/', (req: Request, res: Response) => {
   res.send({ message: 'Welcome to the Job Recommender API' });
