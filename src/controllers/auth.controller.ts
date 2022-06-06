@@ -1,3 +1,5 @@
+/* eslint-disable sonarjs/no-duplicate-string */
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import boom from '@hapi/boom';
 import { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
@@ -7,6 +9,7 @@ import { RequestResponse, UserType } from '../@types';
 import { EmployerAttrs } from '../@types/employer.types';
 import { JobSeekerAttrs } from '../@types/jobseeker.types';
 import logger from '../config/logger';
+import { Admin } from '../models/admin.schema';
 import { Employer } from '../models/employer.schema';
 import { JobSeeker } from '../models/jobseeker.schema';
 
@@ -68,17 +71,45 @@ export const signup = async (req: Request, res: Response, next: NextFunction): P
 
 export const signin = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const { email, password } = req.body;
+  const utype = req.query.utype as UserType;
+
   try {
-    const existingEmployer = await Employer.validateEmployer(email, password);
-    if (existingEmployer) {
-      const JWTtoken = jwt.sign({ id: existingEmployer.employerId }, process.env.JWT_SECRET || '');
+    if (utype === UserType.EMPLOYER) {
+      const existingEmployer = await Employer.validateEmployer(email, password);
+      if (existingEmployer) {
+        const JWTtoken = jwt.sign({ id: existingEmployer.employerId }, process.env.JWT_SECRET!);
+        req.session = {
+          jwt: JWTtoken,
+        };
+        res.status(200).send({ user: existingEmployer });
+        return;
+      }
+      next(boom.unauthorized('Invalid email or password'));
+      return;
+    }
+    if (utype === UserType.JOBSEEKER) {
+      const existingJobSeeker = await JobSeeker.validateJobSeeker(email, password);
+      if (existingJobSeeker) {
+        const JWTtoken = jwt.sign({ id: existingJobSeeker.jobSeekerId }, process.env.JWT_SECRET!);
+        req.session = {
+          jwt: JWTtoken,
+        };
+        res.status(200).send({ user: existingJobSeeker });
+        return;
+      }
+      next(boom.unauthorized('Invalid email or password'));
+      return;
+    }
+    const admin = await Admin.validateAdmin(email, password);
+    if (admin) {
+      const JWTtoken = jwt.sign({ id: admin.email }, process.env.JWT_SECRET!);
       req.session = {
         jwt: JWTtoken,
       };
-      res.status(200).send({ user: existingEmployer });
-    } else {
-      next(boom.unauthorized('Invalid email or password'));
+      res.status(200).send({ user: admin });
+      return;
     }
+    next(boom.unauthorized('Invalid email or password'));
   } catch (error) {
     logger.error(error);
     next(boom.internal(RequestResponse.SERVER_ERROR));

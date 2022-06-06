@@ -1,3 +1,4 @@
+/* eslint-disable unicorn/no-process-exit */
 import cookieSession from 'cookie-session';
 import cors from 'cors';
 import dotenv from 'dotenv';
@@ -9,6 +10,7 @@ import logger from './config/logger';
 import connectMongo from './config/mongo';
 import errorHandler from './middlewares/errorHandler.middleware';
 import notFoundHandler from './middlewares/notFoundHandler.middleware';
+import { Admin } from './models/admin.schema';
 import authRouter from './routers/auth.router';
 
 dotenv.config();
@@ -19,15 +21,20 @@ const app = express();
 
 //* Middilewares
 app.use(helmet());
-app.use(morgan('tiny'));
-app.use(cors());
+if (process.env.NODE_ENV === 'development') {
+  app.use(morgan('common'));
+}
+app.use(cors({ origin: true, credentials: true }));
 app.use(express.json());
+app.set('trust proxy', true);
+
 app.use(
   cookieSession({
     //* avoid encrypting the cookies
     signed: false,
+    expires: new Date(Date.now() + 60 * 60 * 1000 * 24),
     //* https only cookies
-    secure: process.env.NODE_ENV === 'production',
+    secure: process.env.NODE_ENV !== 'development',
   })
 );
 
@@ -42,8 +49,24 @@ app.listen(PORT, async () => {
   try {
     await connectMongo();
     logger.info(`Listening at http://localhost:${PORT}`);
+    if (!process.env.ADMIN_EMAIL || !process.env.ADMIN_PASSWORD || !process.env.JWT_SECRET) {
+      throw new Error('Env variables missing');
+    } else {
+      const existingAdmin = await Admin.findOne({ email: process.env.ADMIN_EMAIL });
+      if (!existingAdmin) {
+        const newAdmin = new Admin({
+          email: process.env.ADMIN_EMAIL,
+          password: process.env.ADMIN_PASSWORD,
+        });
+        await newAdmin.save();
+        logger.info('Admin user created');
+      } else {
+        logger.info('Admin user already exists');
+      }
+    }
   } catch (error) {
     logger.error(error);
+    process.exit();
   }
 });
 

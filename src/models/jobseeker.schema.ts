@@ -12,7 +12,7 @@ import { Password } from '../services/password';
 interface JobSeekerDoc extends JobSeekerAttrs, Document {}
 
 interface JobSeekerModel extends Model<JobSeekerDoc> {
-  validateJobSeekerDoc(email: string, password: string): Promise<Omit<JobSeekerDoc, 'password'> | undefined>;
+  validateJobSeeker(email: string, password: string): Promise<Omit<JobSeekerDoc, 'password'> | undefined>;
   build(jobSeekerData: JobSeekerAttrs): JobSeekerDoc;
 }
 
