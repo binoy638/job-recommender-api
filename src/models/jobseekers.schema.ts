@@ -11,7 +11,7 @@ import { Password } from '../services/password';
 // extend the Model interface with a static method to validate a employer
 interface JobSeekerDoc extends JobSeekerAttrs, Document {}
 
-interface JobSeekerModel extends Model<JobSeekerDoc> {
+interface JobSeekersModel extends Model<JobSeekerDoc> {
   validateJobSeeker(email: string, password: string): Promise<Omit<JobSeekerDoc, 'password'> | undefined>;
   build(jobSeekerData: JobSeekerAttrs): JobSeekerDoc;
 }
@@ -38,7 +38,7 @@ const experienceSchema = new Schema<Experience>({
   description: { type: String, required: true },
 });
 
-const jobSeekerSchema = new Schema<JobSeekerDoc>(
+const jobSeekersSchema = new Schema<JobSeekerDoc>(
   {
     jobSeekerId: { type: Number, required: true, unique: true },
     firstName: { type: String, required: true },
@@ -73,7 +73,7 @@ const jobSeekerSchema = new Schema<JobSeekerDoc>(
 );
 
 // This function runs when new employer is created to hash the password
-jobSeekerSchema.pre('save', async function (next) {
+jobSeekersSchema.pre('save', async function (next) {
   if (!this.isModified('password')) {
     return next();
   }
@@ -83,7 +83,7 @@ jobSeekerSchema.pre('save', async function (next) {
 });
 
 // Helper function to validate a employer
-jobSeekerSchema.static('validateJobSeeker', async function (email: string, password: string): Promise<
+jobSeekersSchema.static('validateJobSeeker', async function (email: string, password: string): Promise<
   Omit<JobSeekerDoc, 'password'> | undefined
 > {
   const jobSeeker = await this.findOne({ email }).lean(true);
@@ -93,8 +93,8 @@ jobSeekerSchema.static('validateJobSeeker', async function (email: string, passw
   return jobSeeker;
 });
 
-jobSeekerSchema.static('build', function (jobseekerData: JobSeekerAttrs) {
+jobSeekersSchema.static('build', function (jobseekerData: JobSeekerAttrs) {
   return new this(jobseekerData);
 });
 
-export const JobSeeker = model<JobSeekerDoc, JobSeekerModel>('JobSeeker', jobSeekerSchema);
+export const JobSeekers = model<JobSeekerDoc, JobSeekersModel>('JobSeekers', jobSeekersSchema);

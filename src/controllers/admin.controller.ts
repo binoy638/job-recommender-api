@@ -4,14 +4,14 @@ import { NextFunction, Request, Response } from 'express';
 
 import { RequestResponse } from '../@types';
 import logger from '../config/logger';
-import { Employer } from '../models/employer.schema';
-import { JobCategory } from '../models/jobCategory.schema';
-import { Skill } from '../models/skill.schema';
+import { Employers } from '../models/employers.schema';
+import { JobCategories } from '../models/jobCategories.schema';
+import { Skills } from '../models/skills.schema';
 
 export const verifyEmployer = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const { employerId } = req.params;
   try {
-    const updatedEmployer = await Employer.findOneAndUpdate(
+    const updatedEmployer = await Employers.findOneAndUpdate(
       { employerId },
       { isVerified: true },
       { new: true, lean: true }
@@ -30,7 +30,7 @@ export const verifyEmployer = async (req: Request, res: Response, next: NextFunc
 export const banEmployer = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const { employerId } = req.params;
   try {
-    const updatedEmployer = await Employer.findOneAndUpdate(
+    const updatedEmployer = await Employers.findOneAndUpdate(
       { employerId },
       { isBanned: true },
       { new: true, lean: true }
@@ -49,7 +49,7 @@ export const banEmployer = async (req: Request, res: Response, next: NextFunctio
 export const addJobCategory = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const { name } = req.body;
   try {
-    await JobCategory.create({ name });
+    await JobCategories.create({ name });
     res.sendStatus(201);
   } catch (error) {
     logger.error(error);
@@ -60,7 +60,7 @@ export const addJobCategory = async (req: Request, res: Response, next: NextFunc
 export const addSKill = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const { name } = req.body;
   try {
-    await Skill.create({ name });
+    await Skills.create({ name });
     res.sendStatus(201);
   } catch (error) {
     logger.error(error);

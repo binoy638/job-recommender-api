@@ -4,8 +4,8 @@ import { JobCategoryAttrs } from '../@types/job.types';
 
 interface JobCategoryDoc extends JobCategoryAttrs, Document {}
 
-const jobCategorySchema = new Schema<JobCategoryDoc>({
+const jobCategoriesSchema = new Schema<JobCategoryDoc>({
   name: { type: String, required: true, unique: true },
 });
 
-export const JobCategory = model<JobCategoryDoc>('JobCategory', jobCategorySchema);
+export const JobCategories = model<JobCategoryDoc>('JobCategories', jobCategoriesSchema);

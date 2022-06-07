@@ -3,13 +3,13 @@ import { NextFunction, Request, Response } from 'express';
 
 import { RequestResponse } from '../@types';
 import logger from '../config/logger';
-import { JobCategory } from '../models/jobCategory.schema';
-import { Skill } from '../models/skill.schema';
+import { JobCategories } from '../models/jobCategories.schema';
+import { Skills } from '../models/skills.schema';
 
 //! need pagination support
 export const getJobCategories = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    const jobCategories = await JobCategory.find({}).lean();
+    const jobCategories = await JobCategories.find({}).lean();
     res.send(jobCategories);
   } catch (error) {
     logger.error(error);
@@ -19,7 +19,7 @@ export const getJobCategories = async (req: Request, res: Response, next: NextFu
 
 export const getSkills = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    const skills = await Skill.find({}).lean();
+    const skills = await Skills.find({}).lean();
     res.send(skills);
   } catch (error) {
     logger.error(error);

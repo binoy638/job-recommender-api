@@ -4,14 +4,14 @@ export interface JobCategoryAttrs {
 }
 export interface JobAttrs {
   id: number;
-  title: string;
+  jobTitle: string;
   employer: string;
   position: string;
-  requirements: string[];
-  //* store skill id's
-  skills?: string[];
+  requiredSkills?: string[];
+  numberOfOpenings: number;
   category: string;
-  salary?: number;
+  ctc?: number;
+  applyBy: string;
   startDate?: string;
   duration?: number;
   description: string;

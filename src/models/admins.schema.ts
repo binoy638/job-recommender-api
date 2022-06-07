@@ -10,12 +10,12 @@ interface AdminModel extends Model<AdminDoc> {
   validateAdmin(email: string, password: string): Promise<Omit<AdminDoc, 'password'> | undefined>;
 }
 
-const adminSchema = new Schema<AdminDoc>({
+const adminsSchema = new Schema<AdminDoc>({
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
 });
 
-adminSchema.pre('save', async function (next) {
+adminsSchema.pre('save', async function (next) {
   if (!this.isModified('password')) {
     return next();
   }
@@ -24,7 +24,7 @@ adminSchema.pre('save', async function (next) {
   return next();
 });
 
-adminSchema.static('validateAdmin', async function (email: string, password: string): Promise<
+adminsSchema.static('validateAdmin', async function (email: string, password: string): Promise<
   Omit<AdminDoc, 'password'> | undefined
 > {
   const admin = await this.findOne({ email }).lean(true);
@@ -34,4 +34,4 @@ adminSchema.static('validateAdmin', async function (email: string, password: str
   return admin;
 });
 
-export const Admin = model<AdminDoc, AdminModel>('Admin', adminSchema);
+export const Admins = model<AdminDoc, AdminModel>('Admins', adminsSchema);
