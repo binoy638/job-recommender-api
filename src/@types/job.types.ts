@@ -1,11 +1,9 @@
 import { Schema } from 'mongoose';
 
 export interface JobCategoryAttrs {
-  jobCategoryId: number;
   name: string;
 }
 export interface JobAttrs {
-  id: number;
   jobTitle: string;
   employer: string;
   requiredSkills?: string[];

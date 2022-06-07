@@ -11,8 +11,8 @@ import { Skills } from '../models/skills.schema';
 export const verifyEmployer = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const { employerId } = req.params;
   try {
-    const updatedEmployer = await Employers.findOneAndUpdate(
-      { employerId },
+    const updatedEmployer = await Employers.findByIdAndUpdate(
+      employerId,
       { isVerified: true },
       { new: true, lean: true }
     );
@@ -30,8 +30,8 @@ export const verifyEmployer = async (req: Request, res: Response, next: NextFunc
 export const banEmployer = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const { employerId } = req.params;
   try {
-    const updatedEmployer = await Employers.findOneAndUpdate(
-      { employerId },
+    const updatedEmployer = await Employers.findByIdAndUpdate(
+      employerId,
       { isBanned: true },
       { new: true, lean: true }
     );

@@ -2,6 +2,7 @@
 import { Document, Model, model, Schema } from 'mongoose';
 
 import { AdminAttrs } from '../@types';
+import { generateID } from '../services/generateID';
 import { Password } from '../services/password';
 
 interface AdminDoc extends AdminAttrs, Document {}
@@ -11,6 +12,7 @@ interface AdminModel extends Model<AdminDoc> {
 }
 
 const adminsSchema = new Schema<AdminDoc>({
+  _id: { type: Number, default: generateID(), required: true, unique: true },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
 });

@@ -17,7 +17,6 @@ export interface Experience {
 }
 
 export interface JobSeekerAttrs extends User {
-  jobSeekerId: number;
   address: Address;
   about: string;
   education: Education[];

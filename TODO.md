@@ -4,7 +4,9 @@
 
 - [x]: Register an account
 - [x]: Login
-- []: Add Jobs (only verified employer's jobs will be visible to jobseekers)
+- [x]: Add Jobs (only verified employer's jobs will be visible to jobseekers)
+- [x]: update Jobs
+- [x]: delete Jobs
 - []: View Job Applications
 
 ## Admin
@@ -19,7 +21,7 @@
 
 - [x]: Register an account
 - [x]: Login
-- []: View Jobs
+- [x]: View Jobs
 - []: Apply for jobs
 - []: Upload resume as pdf (optional)
 - []: Search jobs by position, location,type, category, skill

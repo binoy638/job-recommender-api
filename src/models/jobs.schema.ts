@@ -1,9 +1,12 @@
-import { model, Schema } from 'mongoose';
+import { Document, model, Schema } from 'mongoose';
 
 import { JobAttrs } from '../@types/job.types';
+import { generateID } from '../services/generateID';
 
-const jobsSchema = new Schema<JobAttrs>({
-  id: { type: Number, required: true, unique: true },
+interface JobDoc extends JobAttrs, Document {}
+
+const jobsSchema = new Schema<JobDoc>({
+  _id: { type: Number, default: generateID(), required: true, unique: true },
   jobTitle: { type: String, required: true },
   employer: { type: Schema.Types.ObjectId, ref: 'Employer', required: true },
   description: { type: String, required: true },
@@ -15,4 +18,4 @@ const jobsSchema = new Schema<JobAttrs>({
   startDate: { type: Date },
 });
 
-export const Jobs = model<JobAttrs>('Jobs', jobsSchema);
+export const Jobs = model<JobDoc>('Jobs', jobsSchema);

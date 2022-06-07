@@ -6,6 +6,7 @@ import { Document, Model, model, Schema } from 'mongoose';
 
 import { Address } from '../@types';
 import { EmployerAttrs, Organisation } from '../@types/employer.types';
+import { generateID } from '../services/generateID';
 import { Password } from '../services/password';
 
 interface EmployerDoc extends EmployerAttrs, Document {}
@@ -34,12 +35,12 @@ const organisationSchema = new Schema<Organisation>({
 
 const employersSchema = new Schema<EmployerDoc>(
   {
-    employerId: { type: Number, required: true, unique: true },
+    _id: { type: Number, default: generateID(), required: true, unique: true },
     firstName: { type: String, required: true },
     lastName: { type: String, required: true },
-    email: { type: String, required: true },
+    email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
-    phone: { type: String },
+    phone: { type: String, unique: true },
     organisation: { type: organisationSchema, required: true },
     isVerified: { type: Boolean, default: false },
     isBanned: { type: Boolean, default: false },

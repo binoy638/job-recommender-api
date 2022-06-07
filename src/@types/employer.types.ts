@@ -10,7 +10,6 @@ export interface Organisation {
 }
 
 export interface EmployerAttrs extends User {
-  employerId: number;
   organisation: Organisation;
   isVerified: boolean;
   isBanned: boolean;

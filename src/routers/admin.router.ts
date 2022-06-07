@@ -12,7 +12,6 @@ const adminRouter = Router();
 const employerIdValidator = { params: Yup.object().shape({ employerId: Yup.number().min(12).max(12).required() }) };
 const addSkillBodyValidator = { body: Yup.object().shape({ name: Yup.string().required() }) };
 
-//* verify employer
 adminRouter.put(
   '/employer/verify/:employerId',
   getCurrentUser,
@@ -21,7 +20,6 @@ adminRouter.put(
   adminController.verifyEmployer
 );
 
-//* ban employer
 adminRouter.put(
   '/employer/ban/employerId',
   getCurrentUser,
@@ -30,7 +28,6 @@ adminRouter.put(
   adminController.banEmployer
 );
 
-//* add skill
 adminRouter.post(
   '/skills',
   getCurrentUser,
@@ -39,7 +36,6 @@ adminRouter.post(
   adminController.addSKill
 );
 
-//* add job category
 adminRouter.post(
   '/jobcategory',
   getCurrentUser,

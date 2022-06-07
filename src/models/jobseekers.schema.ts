@@ -6,6 +6,7 @@ import { Document, Model, model, Schema } from 'mongoose';
 
 import { Address } from '../@types';
 import { Education, Experience, JobSeekerAttrs } from '../@types/jobseeker.types';
+import { generateID } from '../services/generateID';
 import { Password } from '../services/password';
 
 // extend the Model interface with a static method to validate a employer
@@ -40,12 +41,12 @@ const experienceSchema = new Schema<Experience>({
 
 const jobSeekersSchema = new Schema<JobSeekerDoc>(
   {
-    jobSeekerId: { type: Number, required: true, unique: true },
+    _id: { type: Number, default: generateID(), required: true, unique: true },
     firstName: { type: String, required: true },
     lastName: { type: String, required: true },
-    email: { type: String, required: true },
+    email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
-    phone: { type: String },
+    phone: { type: String, unique: true },
     address: { type: addressSchema, required: true },
     about: { type: String, required: true },
     education: { type: [educationSchema], required: true },
