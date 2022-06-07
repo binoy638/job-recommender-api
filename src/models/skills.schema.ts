@@ -1,7 +1,7 @@
 import { Document, model, Schema } from 'mongoose';
 
 import type { SkillAttrs } from '../@types';
-import { generateID } from '../services/generateID';
+import { generateID } from '../utils/generateID';
 
 interface SkillDoc extends SkillAttrs, Document {}
 

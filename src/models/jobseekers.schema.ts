@@ -6,8 +6,8 @@ import { Document, Model, model, Schema } from 'mongoose';
 
 import { Address } from '../@types';
 import { Education, Experience, JobSeekerAttrs } from '../@types/jobseeker.types';
-import { generateID } from '../services/generateID';
-import { Password } from '../services/password';
+import { generateID } from '../utils/generateID';
+import { Password } from '../utils/password';
 
 // extend the Model interface with a static method to validate a employer
 interface JobSeekerDoc extends JobSeekerAttrs, Document {}

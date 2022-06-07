@@ -6,8 +6,8 @@ import { Document, Model, model, Schema } from 'mongoose';
 
 import { Address } from '../@types';
 import { EmployerAttrs, Organisation } from '../@types/employer.types';
-import { generateID } from '../services/generateID';
-import { Password } from '../services/password';
+import { generateID } from '../utils/generateID';
+import { Password } from '../utils/password';
 
 interface EmployerDoc extends EmployerAttrs, Document {}
 

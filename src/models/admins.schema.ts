@@ -2,8 +2,8 @@
 import { Document, Model, model, Schema } from 'mongoose';
 
 import { AdminAttrs } from '../@types';
-import { generateID } from '../services/generateID';
-import { Password } from '../services/password';
+import { generateID } from '../utils/generateID';
+import { Password } from '../utils/password';
 
 interface AdminDoc extends AdminAttrs, Document {}
 

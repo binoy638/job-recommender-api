@@ -1,7 +1,7 @@
 import { Document, model, Schema } from 'mongoose';
 
 import { JobAttrs } from '../@types/job.types';
-import { generateID } from '../services/generateID';
+import { generateID } from '../utils/generateID';
 
 interface JobDoc extends JobAttrs, Document {}
 
