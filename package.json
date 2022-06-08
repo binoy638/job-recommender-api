@@ -25,6 +25,7 @@
   "author": "binoy638",
   "license": "MIT",
   "devDependencies": {
+    "@faker-js/faker": "^7.2.0",
     "@types/bcrypt": "^5.0.0",
     "@types/cookie-session": "^2.0.44",
     "@types/cors": "^2.8.12",

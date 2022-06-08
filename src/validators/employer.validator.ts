@@ -8,7 +8,7 @@ export const employerValidator = Yup.object().shape({
   email: Yup.string().email().required(),
   password: Yup.string().min(6).required(),
   phone: Yup.string().matches(phoneRegExp, 'Phone number is not valid').min(10).max(10),
-  organisation: Yup.object().shape({
+  company: Yup.object().shape({
     name: Yup.string().min(3).required(),
     description: Yup.string().max(500).required(),
     yearFounded: Yup.number().required(),
@@ -18,7 +18,6 @@ export const employerValidator = Yup.object().shape({
       .shape({
         city: Yup.string().required(),
         state: Yup.string().required(),
-        zip: Yup.number().required(),
         country: Yup.string().required(),
       })
       .required(),

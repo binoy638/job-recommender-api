@@ -8,11 +8,9 @@ export const jobseekerValidator = Yup.object().shape({
   email: Yup.string().email().required(),
   password: Yup.string().min(6).required(),
   phone: Yup.string().matches(phoneRegExp, 'Phone number is not valid').min(10).max(10),
-  jobSeederId: Yup.number().max(12).min(12).required(),
   address: Yup.object().shape({
     city: Yup.string().required(),
     state: Yup.string().required(),
-    zip: Yup.number().required(),
     country: Yup.string().required(),
   }),
   skills: Yup.array().of(Yup.string()),

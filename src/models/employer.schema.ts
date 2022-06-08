@@ -20,7 +20,7 @@ interface Company {
   address: Address;
 }
 
-interface EmployerAttrs {
+export interface EmployerAttrs {
   firstName: string;
   lastName: string;
   email: string;

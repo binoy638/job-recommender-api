@@ -14,6 +14,7 @@ import { Admin } from './models/admin.schema';
 import adminRouter from './routers/admin.router';
 import authRouter from './routers/auth.router';
 import generalRouter from './routers/generalRouter';
+import testRouter from './routers/test.router';
 
 dotenv.config();
 
@@ -44,6 +45,9 @@ app.use(
 app.use('/api', generalRouter);
 app.use('/api/auth', authRouter);
 app.use('/api/admin', adminRouter);
+if (process.env.NODE_ENV === 'development') {
+  app.use('/api/test', testRouter);
+}
 
 app.listen(PORT, async () => {
   try {

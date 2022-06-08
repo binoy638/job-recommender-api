@@ -24,7 +24,7 @@ interface Experience {
   description: string;
 }
 
-interface JobSeekerAttrs {
+export interface JobSeekerAttrs {
   firstName: string;
   lastName: string;
   email: string;
@@ -39,7 +39,7 @@ interface JobSeekerAttrs {
   skills?: Schema.Types.ObjectId[];
   //* store jobcategory id's
   jobPreferences: Schema.Types.ObjectId[];
-  resume: string;
+  resume?: string;
 }
 
 // extend the Model interface with a static method to validate a employer
@@ -80,6 +80,7 @@ const jobSeekerSchema = new Schema<JobSeekerDoc>(
     password: { type: String, required: true },
     phone: { type: String, unique: true },
     address: { type: addressSchema, required: true },
+    dob: { type: Schema.Types.Date, required: true },
     about: { type: String, required: true },
     education: { type: [educationSchema], required: true },
     experience: { type: [experienceSchema] },

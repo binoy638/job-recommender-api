@@ -34,7 +34,7 @@ export const signup = async (req: Request, res: Response, next: NextFunction): P
       req.session = {
         jwt: JWTtoken,
       };
-      res.status(201).send(newEmployer);
+      res.status(201).send({ message: 'Registered Successfully' });
       return;
     }
     if (utype === UserType.JOBSEEKER) {
@@ -52,7 +52,7 @@ export const signup = async (req: Request, res: Response, next: NextFunction): P
       req.session = {
         jwt: JWTtoken,
       };
-      res.status(201).send(newJobSeeker);
+      res.status(201).send({ message: 'Registered Successfully' });
       return;
     }
 
