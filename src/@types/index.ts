@@ -1,37 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import * as Yup from 'yup';
 
-export interface AdminAttrs {
-  username: string;
-  email: string;
-  password: string;
-}
-
-export interface User {
-  firstName: string;
-  lastName: string;
-  email: string;
-  password: string;
-  phone: string;
-  createdAt: string;
-  updatedAt: string;
-}
-
 export enum UserType {
   EMPLOYER = 'employer',
   JOBSEEKER = 'jobseeker',
   ADMIN = 'admin',
-}
-
-export interface Address {
-  city: string;
-  state: string;
-  country: string;
-}
-
-export interface SkillAttrs {
-  skillId: number;
-  name: string;
 }
 
 export interface RequestPayload {

@@ -1,23 +1,26 @@
 /* eslint-disable consistent-return */
 import { Document, Model, model, Schema } from 'mongoose';
 
-import { AdminAttrs } from '../@types';
 import { generateID } from '../utils/generateID';
 import { Password } from '../utils/password';
 
-interface AdminDoc extends AdminAttrs, Document {}
+interface AdminDoc extends Document {
+  username: string;
+  email: string;
+  password: string;
+}
 
 interface AdminModel extends Model<AdminDoc> {
   validateAdmin(email: string, password: string): Promise<Omit<AdminDoc, 'password'> | undefined>;
 }
 
-const adminsSchema = new Schema<AdminDoc>({
+const adminSchema = new Schema<AdminDoc>({
   id: { type: Number, default: generateID(), required: true, unique: true },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
 });
 
-adminsSchema.pre('save', async function (next) {
+adminSchema.pre('save', async function (next) {
   if (!this.isModified('password')) {
     return next();
   }
@@ -26,7 +29,7 @@ adminsSchema.pre('save', async function (next) {
   return next();
 });
 
-adminsSchema.static('validateAdmin', async function (email: string, password: string): Promise<
+adminSchema.static('validateAdmin', async function (email: string, password: string): Promise<
   Omit<AdminDoc, 'password'> | undefined
 > {
   const admin = await this.findOne({ email }).lean(true);
@@ -36,4 +39,4 @@ adminsSchema.static('validateAdmin', async function (email: string, password: st
   return admin;
 });
 
-export const Admins = model<AdminDoc, AdminModel>('Admins', adminsSchema);
+export const Admin = model<AdminDoc, AdminModel>('Admin', adminSchema);

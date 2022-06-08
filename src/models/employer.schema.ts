@@ -1,18 +1,42 @@
 /* eslint-disable no-param-reassign */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable consistent-return */
-/* eslint-disable @typescript-eslint/ban-types */
 import { Document, Model, model, Schema } from 'mongoose';
 
-import { Address } from '../@types';
-import { EmployerAttrs, Organisation } from '../@types/employer.types';
 import { generateID } from '../utils/generateID';
 import { Password } from '../utils/password';
+
+export interface Address {
+  city: string;
+  state: string;
+  country: string;
+}
+
+interface Company {
+  name: string;
+  description: string;
+  yearFounded: number;
+  website: string;
+  logo: string;
+  address: Address;
+}
+
+interface EmployerAttrs {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  phone: string;
+  company: Company;
+  isVerified: boolean;
+  isBanned: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
 
 interface EmployerDoc extends EmployerAttrs, Document {}
 
 // extend the Model interface with a static method to validate a employer
-interface EmployersModel extends Model<EmployerDoc> {
+interface EmployerModel extends Model<EmployerDoc> {
   validateEmployer(email: string, password: string): Promise<Omit<EmployerDoc, 'password'> | undefined>;
   build(employerData: EmployerAttrs): EmployerDoc;
 }
@@ -23,7 +47,7 @@ export const addressSchema = new Schema<Address>({
   country: { type: String, required: true },
 });
 
-const organisationSchema = new Schema<Organisation>({
+const companySchema = new Schema<Company>({
   name: { type: String, required: true },
   description: { type: String, required: true },
   yearFounded: { type: Number, required: true },
@@ -32,7 +56,7 @@ const organisationSchema = new Schema<Organisation>({
   address: { type: addressSchema, required: true },
 });
 
-const employersSchema = new Schema<EmployerDoc>(
+const employerSchema = new Schema<EmployerDoc>(
   {
     id: { type: Number, default: generateID(), required: true, unique: true },
     firstName: { type: String, required: true },
@@ -40,7 +64,7 @@ const employersSchema = new Schema<EmployerDoc>(
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     phone: { type: String, unique: true },
-    organisation: { type: organisationSchema, required: true },
+    company: { type: companySchema, required: true },
     isVerified: { type: Boolean, default: false },
     isBanned: { type: Boolean, default: false },
   },
@@ -56,7 +80,7 @@ const employersSchema = new Schema<EmployerDoc>(
 );
 
 // This function runs when new employer is created to hash the password
-employersSchema.pre('save', async function (next) {
+employerSchema.pre('save', async function (next) {
   if (!this.isModified('password')) {
     return next();
   }
@@ -66,7 +90,7 @@ employersSchema.pre('save', async function (next) {
 });
 
 // Helper function to validate a employer
-employersSchema.static('validateEmployer', async function (email: string, password: string): Promise<
+employerSchema.static('validateEmployer', async function (email: string, password: string): Promise<
   Omit<EmployerDoc, 'password'> | undefined
 > {
   const employer = await this.findOne({ email }).lean(true);
@@ -76,8 +100,8 @@ employersSchema.static('validateEmployer', async function (email: string, passwo
   return employer;
 });
 
-employersSchema.static('build', function (employerData: EmployerAttrs) {
+employerSchema.static('build', function (employerData: EmployerAttrs) {
   return new this(employerData);
 });
 
-export const Employers = model<EmployerDoc, EmployersModel>('Employers', employersSchema);
+export const Employer = model<EmployerDoc, EmployerModel>('Employer', employerSchema);

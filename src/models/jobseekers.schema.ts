@@ -4,15 +4,48 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import { Document, Model, model, Schema } from 'mongoose';
 
-import { Address } from '../@types';
-import { Education, Experience, JobSeekerAttrs } from '../@types/jobseeker.types';
 import { generateID } from '../utils/generateID';
 import { Password } from '../utils/password';
+import { Address } from './employer.schema';
+
+interface Education {
+  degree: string;
+  institute: string;
+  startYear: number;
+  endYear: number;
+  percentage: number;
+}
+
+interface Experience {
+  role: string;
+  startYear: number;
+  endYear: number;
+  company: string;
+  description: string;
+}
+
+interface JobSeekerAttrs {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  phone: string;
+  dob: Schema.Types.Date;
+  address: Address;
+  about: string;
+  education: Education[];
+  experience: Experience[];
+  //* store skill id's
+  skills?: Schema.Types.ObjectId[];
+  //* store jobcategory id's
+  jobPreferences: Schema.Types.ObjectId[];
+  resume: string;
+}
 
 // extend the Model interface with a static method to validate a employer
 interface JobSeekerDoc extends JobSeekerAttrs, Document {}
 
-interface JobSeekersModel extends Model<JobSeekerDoc> {
+interface JobSeekerModel extends Model<JobSeekerDoc> {
   validateJobSeeker(email: string, password: string): Promise<Omit<JobSeekerDoc, 'password'> | undefined>;
   build(jobSeekerData: JobSeekerAttrs): JobSeekerDoc;
 }
@@ -38,7 +71,7 @@ const experienceSchema = new Schema<Experience>({
   description: { type: String, required: true },
 });
 
-const jobSeekersSchema = new Schema<JobSeekerDoc>(
+const jobSeekerSchema = new Schema<JobSeekerDoc>(
   {
     id: { type: Number, default: generateID(), required: true, unique: true },
     firstName: { type: String, required: true },
@@ -73,7 +106,7 @@ const jobSeekersSchema = new Schema<JobSeekerDoc>(
 );
 
 // This function runs when new employer is created to hash the password
-jobSeekersSchema.pre('save', async function (next) {
+jobSeekerSchema.pre('save', async function (next) {
   if (!this.isModified('password')) {
     return next();
   }
@@ -83,7 +116,7 @@ jobSeekersSchema.pre('save', async function (next) {
 });
 
 // Helper function to validate a employer
-jobSeekersSchema.static('validateJobSeeker', async function (email: string, password: string): Promise<
+jobSeekerSchema.static('validateJobSeeker', async function (email: string, password: string): Promise<
   Omit<JobSeekerDoc, 'password'> | undefined
 > {
   const jobSeeker = await this.findOne({ email }).lean(true);
@@ -93,8 +126,8 @@ jobSeekersSchema.static('validateJobSeeker', async function (email: string, pass
   return jobSeeker;
 });
 
-jobSeekersSchema.static('build', function (jobseekerData: JobSeekerAttrs) {
+jobSeekerSchema.static('build', function (jobseekerData: JobSeekerAttrs) {
   return new this(jobseekerData);
 });
 
-export const JobSeekers = model<JobSeekerDoc, JobSeekersModel>('JobSeekers', jobSeekersSchema);
+export const JobSeeker = model<JobSeekerDoc, JobSeekerModel>('JobSeeker', jobSeekerSchema);

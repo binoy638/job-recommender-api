@@ -3,15 +3,14 @@ import boom from '@hapi/boom';
 import { NextFunction, Request, Response } from 'express';
 
 import { RequestResponse } from '../@types';
-import { JobAttrs } from '../@types/job.types';
 import logger from '../config/logger';
-import { Jobs } from '../models/jobs.schema';
+import { Job, JobDoc } from '../models/jobs.schema';
 
 export const addJob = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-  const body = req.body as Omit<JobAttrs, 'employer'>;
+  const body = req.body as Omit<JobDoc, 'employer'>;
   const { currentUser } = req;
   try {
-    const newJob = await Jobs.create({ ...body, employer: currentUser.id });
+    const newJob = await Job.create({ ...body, employer: currentUser.id });
     res.status(201).send(newJob);
   } catch (error) {
     logger.error(error);
@@ -20,11 +19,11 @@ export const addJob = async (req: Request, res: Response, next: NextFunction): P
 };
 
 export const updateJob = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-  const body = req.body as Partial<JobAttrs>;
+  const body = req.body as Partial<JobDoc>;
   const { id } = req.params;
   const { currentUser } = req;
   try {
-    const updatedJob = await Jobs.findOneAndUpdate({ id, employer: currentUser.id }, body, {
+    const updatedJob = await Job.findOneAndUpdate({ id, employer: currentUser.id }, body, {
       new: true,
       lean: true,
     });
@@ -42,7 +41,7 @@ export const updateJob = async (req: Request, res: Response, next: NextFunction)
 export const getJob = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const { id } = req.params;
   try {
-    const job = await Jobs.findOne({ id }).lean();
+    const job = await Job.findOne({ id }).lean();
     if (!job) {
       next(boom.notFound('Job not found'));
       return;
@@ -57,7 +56,7 @@ export const getJob = async (req: Request, res: Response, next: NextFunction): P
 //! need pagination support
 export const getJobs = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    const jobs = await Jobs.find({}).lean();
+    const jobs = await Job.find({}).lean();
     res.send(jobs);
   } catch (error) {
     logger.error(error);
@@ -70,7 +69,7 @@ export const deleteJob = async (req: Request, res: Response, next: NextFunction)
   const { currentUser } = req;
 
   try {
-    const deletedJob = await Jobs.findOneAndDelete({ id, employer: currentUser.id });
+    const deletedJob = await Job.findOneAndDelete({ id, employer: currentUser.id });
     if (!deletedJob) {
       next(boom.notFound('Job not found'));
       return;

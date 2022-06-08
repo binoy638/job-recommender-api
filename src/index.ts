@@ -10,7 +10,7 @@ import logger from './config/logger';
 import connectMongo from './config/mongo';
 import errorHandler from './middlewares/errorHandler.middleware';
 import notFoundHandler from './middlewares/notFoundHandler.middleware';
-import { Admins } from './models/admins.schema';
+import { Admin } from './models/admin.schema';
 import adminRouter from './routers/admin.router';
 import authRouter from './routers/auth.router';
 import generalRouter from './routers/generalRouter';
@@ -52,9 +52,9 @@ app.listen(PORT, async () => {
     if (!process.env.ADMIN_EMAIL || !process.env.ADMIN_PASSWORD || !process.env.JWT_SECRET) {
       throw new Error('Env variables missing');
     } else {
-      const existingAdmin = await Admins.findOne({ email: process.env.ADMIN_EMAIL });
+      const existingAdmin = await Admin.findOne({ email: process.env.ADMIN_EMAIL });
       if (!existingAdmin) {
-        const newAdmin = new Admins({
+        const newAdmin = new Admin({
           email: process.env.ADMIN_EMAIL,
           password: process.env.ADMIN_PASSWORD,
         });

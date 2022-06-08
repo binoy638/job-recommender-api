@@ -1,11 +1,11 @@
 import { Document, model, Schema } from 'mongoose';
 
-import type { SkillAttrs } from '../@types';
+interface SkillDoc extends Document {
+  name: string;
+}
 
-interface SkillDoc extends SkillAttrs, Document {}
-
-const skillsSchema = new Schema<SkillDoc>({
+const skillSchema = new Schema<SkillDoc>({
   name: { type: String, required: true, unique: true },
 });
 
-export const Skills = model<SkillDoc>('Skills', skillsSchema);
+export const Skill = model<SkillDoc>('Skill', skillSchema);

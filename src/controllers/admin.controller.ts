@@ -4,14 +4,14 @@ import { NextFunction, Request, Response } from 'express';
 
 import { RequestResponse } from '../@types';
 import logger from '../config/logger';
-import { Employers } from '../models/employers.schema';
-import { JobCategories } from '../models/jobCategories.schema';
-import { Skills } from '../models/skills.schema';
+import { Employer } from '../models/employer.schema';
+import { JobCategory } from '../models/jobCategories.schema';
+import { Skill } from '../models/skills.schema';
 
 export const verifyEmployer = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const { employerId } = req.params;
   try {
-    const updatedEmployer = await Employers.findByIdAndUpdate(
+    const updatedEmployer = await Employer.findByIdAndUpdate(
       employerId,
       { isVerified: true },
       { new: true, lean: true }
@@ -30,11 +30,7 @@ export const verifyEmployer = async (req: Request, res: Response, next: NextFunc
 export const banEmployer = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const { employerId } = req.params;
   try {
-    const updatedEmployer = await Employers.findByIdAndUpdate(
-      employerId,
-      { isBanned: true },
-      { new: true, lean: true }
-    );
+    const updatedEmployer = await Employer.findByIdAndUpdate(employerId, { isBanned: true }, { new: true, lean: true });
     if (updatedEmployer) {
       res.sendStatus(204);
       return;
@@ -49,7 +45,7 @@ export const banEmployer = async (req: Request, res: Response, next: NextFunctio
 export const addJobCategory = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const { name } = req.body;
   try {
-    await JobCategories.create({ name });
+    await JobCategory.create({ name });
     res.sendStatus(201);
   } catch (error) {
     logger.error(error);
@@ -60,7 +56,7 @@ export const addJobCategory = async (req: Request, res: Response, next: NextFunc
 export const addSKill = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const { name } = req.body;
   try {
-    await Skills.create({ name });
+    await Skill.create({ name });
     res.sendStatus(201);
   } catch (error) {
     logger.error(error);
