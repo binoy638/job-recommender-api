@@ -70,12 +70,6 @@ const employerSchema = new Schema<EmployerDoc>(
   },
   {
     timestamps: true,
-    toJSON: {
-      transform(doc, ret) {
-        delete ret.password;
-      },
-      versionKey: false,
-    },
   }
 );
 
@@ -97,6 +91,8 @@ employerSchema.static('validateEmployer', async function (email: string, passwor
   if (!employer) return;
   const isPasswordValid = await Password.compare(password, employer.password);
   if (!isPasswordValid) return;
+  delete employer.password;
+  delete employer.__v;
   return employer;
 });
 

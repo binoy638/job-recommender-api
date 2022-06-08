@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 /* eslint-disable consistent-return */
 import { Document, Model, model, Schema } from 'mongoose';
 
@@ -14,11 +15,16 @@ interface AdminModel extends Model<AdminDoc> {
   validateAdmin(email: string, password: string): Promise<Omit<AdminDoc, 'password'> | undefined>;
 }
 
-const adminSchema = new Schema<AdminDoc>({
-  id: { type: Number, default: generateID(), required: true, unique: true },
-  email: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
-});
+const adminSchema = new Schema<AdminDoc>(
+  {
+    id: { type: Number, default: generateID(), required: true, unique: true },
+    email: { type: String, required: true, unique: true },
+    password: { type: String, required: true },
+  },
+  {
+    timestamps: true,
+  }
+);
 
 adminSchema.pre('save', async function (next) {
   if (!this.isModified('password')) {
@@ -29,13 +35,13 @@ adminSchema.pre('save', async function (next) {
   return next();
 });
 
-adminSchema.static('validateAdmin', async function (email: string, password: string): Promise<
-  Omit<AdminDoc, 'password'> | undefined
-> {
+adminSchema.static('validateAdmin', async function (email: string, password: string): Promise<AdminDoc | undefined> {
   const admin = await this.findOne({ email }).lean(true);
   if (!admin) return;
   const isPasswordValid = await Password.compare(password, admin.password);
   if (!isPasswordValid) return;
+  delete admin.password;
+  delete admin.__v;
   return admin;
 });
 

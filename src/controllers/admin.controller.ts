@@ -9,15 +9,11 @@ import { JobCategory } from '../models/jobCategories.schema';
 import { Skill } from '../models/skills.schema';
 
 export const verifyEmployer = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-  const { employerId } = req.params;
+  const { id } = req.params;
   try {
-    const updatedEmployer = await Employer.findByIdAndUpdate(
-      employerId,
-      { isVerified: true },
-      { new: true, lean: true }
-    );
+    const updatedEmployer = await Employer.findOneAndUpdate({ id }, { isVerified: true }, { new: true, lean: true });
     if (updatedEmployer) {
-      res.sendStatus(204);
+      res.status(204).send({ message: 'Verified Successfully' });
       return;
     }
     next(boom.notFound("Employer doesn't exist"));
@@ -28,11 +24,11 @@ export const verifyEmployer = async (req: Request, res: Response, next: NextFunc
 };
 
 export const banEmployer = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-  const { employerId } = req.params;
+  const { id } = req.params;
   try {
-    const updatedEmployer = await Employer.findByIdAndUpdate(employerId, { isBanned: true }, { new: true, lean: true });
+    const updatedEmployer = await Employer.findOneAndUpdate({ id }, { isBanned: true }, { new: true, lean: true });
     if (updatedEmployer) {
-      res.sendStatus(204);
+      res.status(204).send({ message: 'Employer Banned' });
       return;
     }
     next(boom.notFound("Employer doesn't exist"));
@@ -45,6 +41,11 @@ export const banEmployer = async (req: Request, res: Response, next: NextFunctio
 export const addJobCategory = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const { name } = req.body;
   try {
+    const existingJobCategory = await JobCategory.findOne({ name });
+    if (existingJobCategory) {
+      next(boom.badRequest('JobCategory already exists'));
+      return;
+    }
     await JobCategory.create({ name });
     res.sendStatus(201);
   } catch (error) {
@@ -56,6 +57,11 @@ export const addJobCategory = async (req: Request, res: Response, next: NextFunc
 export const addSKill = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const { name } = req.body;
   try {
+    const existingSkill = await Skill.findOne({ name });
+    if (existingSkill) {
+      next(boom.badRequest('Skill already exists'));
+      return;
+    }
     await Skill.create({ name });
     res.sendStatus(201);
   } catch (error) {

@@ -9,11 +9,11 @@ import { payloadValidator } from '../middlewares/validator.middleware';
 
 const adminRouter = Router();
 
-const employerIdValidator = { params: Yup.object().shape({ employerId: Yup.number().min(12).max(12).required() }) };
+const employerIdValidator = { params: Yup.object().shape({ id: Yup.number().required() }) };
 const addSkillBodyValidator = { body: Yup.object().shape({ name: Yup.string().required() }) };
 
 adminRouter.put(
-  '/employer/verify/:employerId',
+  '/employer/verify/:id',
   getCurrentUser,
   userTypeValidator(UserType.ADMIN),
   payloadValidator(employerIdValidator),
@@ -21,7 +21,7 @@ adminRouter.put(
 );
 
 adminRouter.put(
-  '/employer/ban/employerId',
+  '/employer/ban/:id',
   getCurrentUser,
   userTypeValidator(UserType.ADMIN),
   payloadValidator(employerIdValidator),

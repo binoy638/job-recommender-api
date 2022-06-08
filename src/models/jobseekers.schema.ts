@@ -97,12 +97,6 @@ const jobSeekerSchema = new Schema<JobSeekerDoc>(
   },
   {
     timestamps: true,
-    toJSON: {
-      transform(doc, ret) {
-        delete ret.password;
-      },
-      versionKey: false,
-    },
   }
 );
 
@@ -124,6 +118,8 @@ jobSeekerSchema.static('validateJobSeeker', async function (email: string, passw
   if (!jobSeeker) return;
   const isPasswordValid = await Password.compare(password, jobSeeker.password);
   if (!isPasswordValid) return;
+  delete jobSeeker.password;
+  delete jobSeeker.__v;
   return jobSeeker;
 });
 
