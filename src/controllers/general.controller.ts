@@ -17,9 +17,28 @@ export const getJobCategories = async (req: Request, res: Response, next: NextFu
   }
 };
 
-export const getSkills = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+export const searchSkills = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  const query = req.query.q;
   try {
-    const skills = await Skills.find({}).lean();
+    const skills = await Skills.aggregate([
+      {
+        $search: {
+          index: 'skills-index',
+
+          autocomplete: {
+            query,
+            path: 'name',
+            fuzzy: {
+              maxEdits: 2,
+              prefixLength: 3,
+            },
+          },
+        },
+      },
+      {
+        $limit: 10,
+      },
+    ]);
     res.send(skills);
   } catch (error) {
     logger.error(error);

@@ -24,7 +24,7 @@ export const updateJob = async (req: Request, res: Response, next: NextFunction)
   const { id } = req.params;
   const { currentUser } = req;
   try {
-    const updatedJob = await Jobs.findOneAndUpdate({ _id: id, employer: currentUser.id }, body, {
+    const updatedJob = await Jobs.findOneAndUpdate({ id, employer: currentUser.id }, body, {
       new: true,
       lean: true,
     });
@@ -42,7 +42,7 @@ export const updateJob = async (req: Request, res: Response, next: NextFunction)
 export const getJob = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const { id } = req.params;
   try {
-    const job = await Jobs.findById(id).lean();
+    const job = await Jobs.findOne({ id }).lean();
     if (!job) {
       next(boom.notFound('Job not found'));
       return;
@@ -70,7 +70,7 @@ export const deleteJob = async (req: Request, res: Response, next: NextFunction)
   const { currentUser } = req;
 
   try {
-    const deletedJob = await Jobs.findOneAndDelete({ _id: id, employer: currentUser.id });
+    const deletedJob = await Jobs.findOneAndDelete({ id, employer: currentUser.id });
     if (!deletedJob) {
       next(boom.notFound('Job not found'));
       return;

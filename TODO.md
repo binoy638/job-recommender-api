@@ -24,4 +24,4 @@
 - [x]: View Jobs
 - []: Apply for jobs
 - []: Upload resume as pdf (optional)
-- []: Search jobs by position, location,type, category, skill
+- []: Search jobs by location,company name, category

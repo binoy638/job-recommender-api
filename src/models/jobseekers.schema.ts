@@ -20,7 +20,6 @@ interface JobSeekersModel extends Model<JobSeekerDoc> {
 const addressSchema = new Schema<Address>({
   city: { type: String, required: true },
   state: { type: String, required: true },
-  zip: { type: String, required: true },
   country: { type: String, required: true },
 });
 
@@ -41,7 +40,7 @@ const experienceSchema = new Schema<Experience>({
 
 const jobSeekersSchema = new Schema<JobSeekerDoc>(
   {
-    _id: { type: Number, default: generateID(), required: true, unique: true },
+    id: { type: Number, default: generateID(), required: true, unique: true },
     firstName: { type: String, required: true },
     lastName: { type: String, required: true },
     email: { type: String, required: true, unique: true },

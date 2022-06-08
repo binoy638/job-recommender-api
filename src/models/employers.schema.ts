@@ -17,10 +17,9 @@ interface EmployersModel extends Model<EmployerDoc> {
   build(employerData: EmployerAttrs): EmployerDoc;
 }
 
-const addressSchema = new Schema<Address>({
+export const addressSchema = new Schema<Address>({
   city: { type: String, required: true },
   state: { type: String, required: true },
-  zip: { type: String, required: true },
   country: { type: String, required: true },
 });
 
@@ -35,7 +34,7 @@ const organisationSchema = new Schema<Organisation>({
 
 const employersSchema = new Schema<EmployerDoc>(
   {
-    _id: { type: Number, default: generateID(), required: true, unique: true },
+    id: { type: Number, default: generateID(), required: true, unique: true },
     firstName: { type: String, required: true },
     lastName: { type: String, required: true },
     email: { type: String, required: true, unique: true },

@@ -2,7 +2,7 @@
 import cookieSession from 'cookie-session';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import express, { Request, Response } from 'express';
+import express from 'express';
 import helmet from 'helmet';
 import morgan from 'morgan';
 
@@ -44,10 +44,6 @@ app.use(
 app.use('/api', generalRouter);
 app.use('/api/auth', authRouter);
 app.use('/api/admin', adminRouter);
-
-app.get('/', (req: Request, res: Response) => {
-  res.send({ message: 'Welcome to the Job Recommender API' });
-});
 
 app.listen(PORT, async () => {
   try {

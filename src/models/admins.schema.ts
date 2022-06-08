@@ -12,7 +12,7 @@ interface AdminModel extends Model<AdminDoc> {
 }
 
 const adminsSchema = new Schema<AdminDoc>({
-  _id: { type: Number, default: generateID(), required: true, unique: true },
+  id: { type: Number, default: generateID(), required: true, unique: true },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
 });

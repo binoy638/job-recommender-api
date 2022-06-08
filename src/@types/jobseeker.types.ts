@@ -1,3 +1,5 @@
+import { Schema } from 'mongoose';
+
 import { Address, User } from './index';
 
 export interface Education {
@@ -17,6 +19,7 @@ export interface Experience {
 }
 
 export interface JobSeekerAttrs extends User {
+  dob: Schema.Types.Date;
   address: Address;
   about: string;
   education: Education[];
