@@ -23,5 +23,5 @@
 - [x]: Login
 - [x]: View Jobs
 - []: Search jobs by location,company name, category
-- []: Apply for jobs
+- []: Submit job application
 - []: Upload resume as pdf (optional)
