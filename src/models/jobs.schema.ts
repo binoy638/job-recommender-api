@@ -3,7 +3,7 @@ import { Document, model, Schema } from 'mongoose';
 import { generateID } from '../utils/generateID';
 import { Address, addressSchema } from './employer.schema';
 
-export interface JobDoc extends Document {
+export interface JobAttrs {
   jobTitle: string;
   employer: string;
   requiredSkills?: Schema.Types.ObjectId[];
@@ -15,6 +15,8 @@ export interface JobDoc extends Document {
   startDate?: Schema.Types.Date;
   description: string;
 }
+
+interface JobDoc extends JobAttrs, Document {}
 
 const jobSchema = new Schema<JobDoc>({
   id: { type: Number, default: generateID(), required: true, unique: true },
