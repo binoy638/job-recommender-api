@@ -16,7 +16,7 @@ export interface JobAttrs {
   description: string;
 }
 
-interface JobDoc extends JobAttrs, Document {}
+export interface JobDoc extends JobAttrs, Document {}
 
 const jobSchema = new Schema<JobDoc>({
   id: { type: Number, default: generateID(), required: true, unique: true },
