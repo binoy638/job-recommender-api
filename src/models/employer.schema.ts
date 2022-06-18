@@ -58,7 +58,7 @@ const companySchema = new Schema<Company>({
 
 const employerSchema = new Schema<EmployerDoc>(
   {
-    id: { type: Number, default: generateID(), required: true, unique: true },
+    id: { type: Number, default: generateID(), required: true },
     firstName: { type: String, required: true },
     lastName: { type: String, required: true },
     email: { type: String, required: true, unique: true },
@@ -69,6 +69,12 @@ const employerSchema = new Schema<EmployerDoc>(
     isBanned: { type: Boolean, default: false },
   },
   {
+    toObject: {
+      transform: (doc, ret) => {
+        delete ret.password;
+        delete ret.__v;
+      },
+    },
     timestamps: true,
   }
 );

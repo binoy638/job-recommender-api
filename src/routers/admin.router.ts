@@ -12,6 +12,8 @@ const adminRouter = Router();
 const employerIdValidator = { params: Yup.object().shape({ id: Yup.number().required() }) };
 const addSkillBodyValidator = { body: Yup.object().shape({ name: Yup.string().required() }) };
 
+adminRouter.get('/employers', getCurrentUser, userTypeValidator(UserType.ADMIN), adminController.getEmployers);
+
 adminRouter.put(
   '/employer/verify/:id',
   getCurrentUser,

@@ -69,3 +69,14 @@ export const addSKill = async (req: Request, res: Response, next: NextFunction):
     next(boom.internal(RequestResponse.SERVER_ERROR));
   }
 };
+
+export const getEmployers = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  try {
+    //! pagination
+    const employers = await Employer.find({}).select('-password -__v -_id').lean(true);
+    res.status(200).send(employers);
+  } catch (error) {
+    logger.error(error);
+    next(boom.internal(RequestResponse.SERVER_ERROR));
+  }
+};
