@@ -69,12 +69,6 @@ const employerSchema = new Schema<EmployerDoc>(
     isBanned: { type: Boolean, default: false },
   },
   {
-    toObject: {
-      transform: (doc, ret) => {
-        delete ret.password;
-        delete ret.__v;
-      },
-    },
     timestamps: true,
   }
 );

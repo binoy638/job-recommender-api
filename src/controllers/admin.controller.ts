@@ -43,7 +43,7 @@ export const addJobCategory = async (req: Request, res: Response, next: NextFunc
   try {
     const existingJobCategory = await JobCategory.findOne({ name });
     if (existingJobCategory) {
-      next(boom.badRequest('JobCategory already exists'));
+      next(boom.badData('Job Category already exists'));
       return;
     }
     await JobCategory.create({ name });
