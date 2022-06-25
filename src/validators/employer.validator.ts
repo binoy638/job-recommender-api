@@ -13,7 +13,7 @@ export const employerValidator = Yup.object().shape({
     description: Yup.string().max(500).required(),
     yearFounded: Yup.number().required(),
     website: Yup.string().url().required(),
-    logo: Yup.string().required(),
+    logo: Yup.string(),
     address: Yup.object()
       .shape({
         city: Yup.string().required(),

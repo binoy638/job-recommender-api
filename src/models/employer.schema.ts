@@ -52,7 +52,7 @@ const companySchema = new Schema<Company>({
   description: { type: String, required: true },
   yearFounded: { type: Number, required: true },
   website: { type: String, required: true },
-  logo: { type: String, required: true },
+  logo: { type: String },
   address: { type: addressSchema, required: true },
 });
 
