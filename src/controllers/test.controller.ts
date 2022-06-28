@@ -8,7 +8,7 @@ import { Schema } from 'mongoose';
 import { RequestResponse } from '../@types';
 import logger from '../config/logger';
 import { EmployerAttrs } from '../models/employer.schema';
-import { JobAttrs } from '../models/jobs.schema';
+import { JobAttrs, JobMode } from '../models/jobs.schema';
 import { JobSeekerAttrs } from '../models/jobseekers.schema';
 
 function createRandomEmployer(): Omit<EmployerAttrs, 'createdAt' | 'updatedAt'> {
@@ -110,7 +110,8 @@ function createRandomJob(): JobAttrs {
     employer: '62a100dbdb6897b7f08a285a',
     requiredSkills: ['62a0a8863306a92e3b9fa2d6' as unknown as Schema.Types.ObjectId],
     numberOfOpenings: Math.floor(Math.random() * 10),
-    location: { city: faker.address.city(), state: faker.address.state(), country: faker.address.country() },
+    mode: JobMode.FULLTIME,
+    location: [{ city: faker.address.city(), state: faker.address.state(), country: faker.address.country() }],
     category: '62a10b237801fd275abeb857' as unknown as Schema.Types.ObjectId,
     // eslint-disable-next-line unicorn/numeric-separators-style
     ctc: 500000,
