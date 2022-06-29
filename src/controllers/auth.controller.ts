@@ -75,7 +75,7 @@ export const signin = async (req: Request, res: Response, next: NextFunction): P
         req.session = {
           jwt: JWTtoken,
         };
-        res.status(200).send({ user: existingEmployer });
+        res.status(200).send({ user: existingEmployer, type: UserType.EMPLOYER });
         return;
       }
       next(boom.unauthorized('Invalid email or password'));
@@ -88,7 +88,8 @@ export const signin = async (req: Request, res: Response, next: NextFunction): P
         req.session = {
           jwt: JWTtoken,
         };
-        res.status(200).send({ user: existingJobSeeker });
+        res.status(200).send({ user: existingJobSeeker, type: UserType.JOBSEEKER });
+
         return;
       }
       next(boom.unauthorized('Invalid email or password'));
@@ -100,7 +101,8 @@ export const signin = async (req: Request, res: Response, next: NextFunction): P
       req.session = {
         jwt: JWTtoken,
       };
-      res.status(200).send({ user: admin });
+      res.status(200).send({ user: admin, type: UserType.ADMIN });
+
       return;
     }
     next(boom.unauthorized('Invalid email or password'));
@@ -133,7 +135,7 @@ export const getCurrentUser = async (req: Request, res: Response, next: NextFunc
       next(boom.notFound('User not found'));
       return;
     }
-    res.status(200).send({ user: employer, utype: UserType.EMPLOYER });
+    res.status(200).send({ user: employer, type: UserType.EMPLOYER });
   }
 
   if (currentUser.utype === UserType.JOBSEEKER) {
@@ -142,7 +144,7 @@ export const getCurrentUser = async (req: Request, res: Response, next: NextFunc
       next(boom.notFound('User not found'));
       return;
     }
-    res.status(200).send({ user: jobSeeker, utype: UserType.JOBSEEKER });
+    res.status(200).send({ user: jobSeeker, type: UserType.JOBSEEKER });
   }
 
   if (currentUser.utype === UserType.ADMIN) {
@@ -151,6 +153,6 @@ export const getCurrentUser = async (req: Request, res: Response, next: NextFunc
       next(boom.notFound('User not found'));
       return;
     }
-    res.status(200).send({ user: admin, utype: UserType.ADMIN });
+    res.status(200).send({ user: admin, type: UserType.ADMIN });
   }
 };

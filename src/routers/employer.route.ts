@@ -17,7 +17,7 @@ employerRouter.post(
   employerController.addJob
 );
 
-employerRouter.get('/job', getCurrentUser, userTypeValidator(UserType.EMPLOYER), employerController.getJobs);
+employerRouter.get('/jobs', getCurrentUser, userTypeValidator(UserType.EMPLOYER), employerController.getJobs);
 
 employerRouter.get('/job/:id', getCurrentUser, userTypeValidator(UserType.EMPLOYER), employerController.getJob);
 
