@@ -6,32 +6,23 @@ import { RequestResponse } from '../@types';
 import logger from '../config/logger';
 import { Job, JobDoc } from '../models/jobs.schema';
 
-export const addJob = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-  const body = req.body as Omit<JobDoc, 'employer'>;
+export const getJobs = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const { currentUser } = req;
   try {
-    const newJob = await Job.create({ ...body, employer: currentUser.id });
-    res.status(201).send(newJob);
+    const jobs = await Job.find({ employer: currentUser.id }).lean();
+    res.send(jobs);
   } catch (error) {
     logger.error(error);
     next(boom.internal(RequestResponse.SERVER_ERROR));
   }
 };
 
-export const updateJob = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-  const body = req.body as Partial<JobDoc>;
-  const { id } = req.params;
+export const addJob = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  const body = req.body as Omit<JobDoc, 'employer'>;
   const { currentUser } = req;
   try {
-    const updatedJob = await Job.findOneAndUpdate({ id, employer: currentUser.id }, body, {
-      new: true,
-      lean: true,
-    });
-    if (!updatedJob) {
-      next(boom.notFound('Job not found'));
-      return;
-    }
-    res.status(204).send(updatedJob);
+    const newJob = await Job.create({ ...body, employer: currentUser.id });
+    res.status(201).send(newJob);
   } catch (error) {
     logger.error(error);
     next(boom.internal(RequestResponse.SERVER_ERROR));
@@ -53,11 +44,20 @@ export const getJob = async (req: Request, res: Response, next: NextFunction): P
   }
 };
 
-//! need pagination support
-export const getJobs = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+export const updateJob = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  const body = req.body as Partial<JobDoc>;
+  const { id } = req.params;
+  const { currentUser } = req;
   try {
-    const jobs = await Job.find({}).lean();
-    res.send(jobs);
+    const updatedJob = await Job.findOneAndUpdate({ id, employer: currentUser.id }, body, {
+      new: true,
+      lean: true,
+    });
+    if (!updatedJob) {
+      next(boom.notFound('Job not found'));
+      return;
+    }
+    res.status(204).send(updatedJob);
   } catch (error) {
     logger.error(error);
     next(boom.internal(RequestResponse.SERVER_ERROR));

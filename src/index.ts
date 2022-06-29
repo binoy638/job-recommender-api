@@ -13,6 +13,7 @@ import notFoundHandler from './middlewares/notFoundHandler.middleware';
 import { Admin } from './models/admin.schema';
 import adminRouter from './routers/admin.router';
 import authRouter from './routers/auth.router';
+import employerRouter from './routers/employer.route';
 import generalRouter from './routers/generalRouter';
 import testRouter from './routers/test.router';
 
@@ -45,6 +46,8 @@ app.use(
 app.use('/api', generalRouter);
 app.use('/api/auth', authRouter);
 app.use('/api/admin', adminRouter);
+app.use('/api/employer', employerRouter);
+
 if (process.env.NODE_ENV === 'development') {
   app.use('/api/test', testRouter);
 }

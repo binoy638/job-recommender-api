@@ -15,6 +15,7 @@ interface Company {
   name: string;
   description: string;
   yearFounded: number;
+  employees?: number;
   website: string;
   logo: string;
   address: Address;
@@ -50,6 +51,7 @@ export const addressSchema = new Schema<Address>({
 const companySchema = new Schema<Company>({
   name: { type: String, required: true },
   description: { type: String, required: true },
+  employees: { type: Number },
   yearFounded: { type: Number, required: true },
   website: { type: String, required: true },
   logo: { type: String },

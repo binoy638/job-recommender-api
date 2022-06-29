@@ -120,6 +120,37 @@ export const signout = async (req: Request, res: Response, next: NextFunction): 
   }
 };
 
-export const getCurrentUser = async (req: Request, res: Response): Promise<void> => {
-  res.send({ currentUser: req?.currentUser || null });
+export const getCurrentUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  const { currentUser } = req;
+  if (!currentUser) {
+    next(boom.unauthorized('User not logged in'));
+    return;
+  }
+
+  if (currentUser.utype === UserType.EMPLOYER) {
+    const employer = await Employer.findById(currentUser.id).select('-password');
+    if (!employer) {
+      next(boom.notFound('User not found'));
+      return;
+    }
+    res.status(200).send({ user: employer, utype: UserType.EMPLOYER });
+  }
+
+  if (currentUser.utype === UserType.JOBSEEKER) {
+    const jobSeeker = await JobSeeker.findById(currentUser.id).select('-password');
+    if (!jobSeeker) {
+      next(boom.notFound('User not found'));
+      return;
+    }
+    res.status(200).send({ user: jobSeeker, utype: UserType.JOBSEEKER });
+  }
+
+  if (currentUser.utype === UserType.ADMIN) {
+    const admin = await Admin.findById(currentUser.id).select('-password');
+    if (!admin) {
+      next(boom.notFound('User not found'));
+      return;
+    }
+    res.status(200).send({ user: admin, utype: UserType.ADMIN });
+  }
 };
