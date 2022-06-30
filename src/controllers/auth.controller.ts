@@ -71,7 +71,13 @@ export const signin = async (req: Request, res: Response, next: NextFunction): P
     if (utype === UserType.EMPLOYER) {
       const existingEmployer = await Employer.validateEmployer(email, password);
       if (existingEmployer) {
-        const JWTtoken = jwt.sign({ id: existingEmployer._id, utype: UserType.EMPLOYER }, process.env.JWT_SECRET!);
+        const JWTtoken = jwt.sign(
+          {
+            id: existingEmployer._id,
+            utype: UserType.EMPLOYER,
+          },
+          process.env.JWT_SECRET!
+        );
         req.session = {
           jwt: JWTtoken,
         };
@@ -155,4 +161,13 @@ export const getCurrentUser = async (req: Request, res: Response, next: NextFunc
     }
     res.status(200).send({ user: admin, type: UserType.ADMIN });
   }
+};
+
+export const getSession = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  const { currentUser } = req;
+  if (!currentUser) {
+    next(boom.unauthorized('User not logged in'));
+    return;
+  }
+  res.status(200).send({ session: currentUser });
 };

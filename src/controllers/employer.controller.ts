@@ -4,7 +4,24 @@ import { NextFunction, Request, Response } from 'express';
 
 import { RequestResponse } from '../@types';
 import logger from '../config/logger';
+import { Employer } from '../models/employer.schema';
 import { Job, JobDoc } from '../models/jobs.schema';
+
+export const getEmployerStatus = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  const { currentUser } = req;
+  try {
+    const employerStatus = await Employer.findById(currentUser.id).select('isVerified isBanned');
+    console.log(employerStatus);
+    if (!employerStatus) {
+      next(boom.badRequest('employer does not exist'));
+      return;
+    }
+    res.send({ status: employerStatus });
+  } catch (error) {
+    logger.error(error);
+    next(boom.internal(RequestResponse.SERVER_ERROR));
+  }
+};
 
 export const getJobs = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const { currentUser } = req;

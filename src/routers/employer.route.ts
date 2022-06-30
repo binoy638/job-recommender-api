@@ -9,6 +9,13 @@ import { jobAddValidator, jobUpdateValidator } from '../validators/job.validator
 
 const employerRouter = Router();
 
+employerRouter.get(
+  '/status',
+  getCurrentUser,
+  userTypeValidator(UserType.EMPLOYER),
+  employerController.getEmployerStatus
+);
+
 employerRouter.post(
   '/job',
   getCurrentUser,
