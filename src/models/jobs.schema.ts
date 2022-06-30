@@ -8,6 +8,12 @@ export enum JobMode {
   PARTTIME = 'PARTTIME',
 }
 
+interface Salary {
+  negotiable: boolean;
+  min: number;
+  max: number;
+}
+
 export interface JobAttrs {
   jobTitle: string;
   employer: string;
@@ -16,7 +22,7 @@ export interface JobAttrs {
   numberOfOpenings: number;
   location?: Address[];
   category: Schema.Types.ObjectId;
-  ctc?: number;
+  salary?: Salary;
   applyBy: Schema.Types.Date;
   startDate?: Schema.Types.Date;
   description: string;
@@ -34,7 +40,11 @@ const jobSchema = new Schema<JobDoc>({
   numberOfOpenings: { type: Number, required: true },
   category: { type: Schema.Types.ObjectId, ref: 'JobCategories', required: true },
   location: { type: [addressSchema] },
-  ctc: { type: Number },
+  salary: {
+    negotiable: { type: Boolean, default: false },
+    min: { type: Number },
+    max: { type: Number },
+  },
   applyBy: { type: Date, required: true },
   startDate: { type: Date },
 });

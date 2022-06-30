@@ -30,7 +30,10 @@ export const signup = async (req: Request, res: Response, next: NextFunction): P
       const newEmployer = Employer.build(body);
       await newEmployer.save();
       logger.debug(`Employer registered :${JSON.stringify(newEmployer)}`);
-      const JWTtoken = jwt.sign({ id: newEmployer._id, utype: UserType.EMPLOYER }, process.env.JWT_SECRET!);
+      const JWTtoken = jwt.sign(
+        { id: newEmployer._id, utype: UserType.EMPLOYER, name: newEmployer.firstName },
+        process.env.JWT_SECRET!
+      );
       req.session = {
         jwt: JWTtoken,
       };
@@ -48,7 +51,10 @@ export const signup = async (req: Request, res: Response, next: NextFunction): P
       const newJobSeeker = JobSeeker.build(body);
       await newJobSeeker.save();
       logger.debug(`JobSeeker registered :${JSON.stringify(newJobSeeker)}`);
-      const JWTtoken = jwt.sign({ id: newJobSeeker._id, utype: UserType.JOBSEEKER }, process.env.JWT_SECRET!);
+      const JWTtoken = jwt.sign(
+        { id: newJobSeeker._id, utype: UserType.JOBSEEKER, name: newJobSeeker.firstName },
+        process.env.JWT_SECRET!
+      );
       req.session = {
         jwt: JWTtoken,
       };
@@ -75,6 +81,7 @@ export const signin = async (req: Request, res: Response, next: NextFunction): P
           {
             id: existingEmployer._id,
             utype: UserType.EMPLOYER,
+            name: existingEmployer.firstName,
           },
           process.env.JWT_SECRET!
         );
@@ -90,7 +97,10 @@ export const signin = async (req: Request, res: Response, next: NextFunction): P
     if (utype === UserType.JOBSEEKER) {
       const existingJobSeeker = await JobSeeker.validateJobSeeker(email, password);
       if (existingJobSeeker) {
-        const JWTtoken = jwt.sign({ id: existingJobSeeker._id, utype: UserType.JOBSEEKER }, process.env.JWT_SECRET!);
+        const JWTtoken = jwt.sign(
+          { id: existingJobSeeker._id, utype: UserType.JOBSEEKER, name: existingJobSeeker.firstName },
+          process.env.JWT_SECRET!
+        );
         req.session = {
           jwt: JWTtoken,
         };
@@ -103,7 +113,10 @@ export const signin = async (req: Request, res: Response, next: NextFunction): P
     }
     const admin = await Admin.validateAdmin(email, password);
     if (admin) {
-      const JWTtoken = jwt.sign({ id: admin._id, utype: UserType.ADMIN }, process.env.JWT_SECRET!);
+      const JWTtoken = jwt.sign(
+        { id: admin._id, utype: UserType.ADMIN, name: admin.username },
+        process.env.JWT_SECRET!
+      );
       req.session = {
         jwt: JWTtoken,
       };

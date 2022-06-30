@@ -114,7 +114,6 @@ function createRandomJob(): JobAttrs {
     location: [{ city: faker.address.city(), state: faker.address.state(), country: faker.address.country() }],
     category: '62a10b237801fd275abeb857' as unknown as Schema.Types.ObjectId,
     // eslint-disable-next-line unicorn/numeric-separators-style
-    ctc: 500000,
     applyBy: faker.date.future() as unknown as Schema.Types.Date,
     startDate: faker.date.future() as unknown as Schema.Types.Date,
     description: faker.lorem.paragraphs(),

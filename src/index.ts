@@ -56,6 +56,7 @@ app.listen(PORT, async () => {
   try {
     await connectMongo();
     logger.info(`Listening at http://localhost:${PORT}`);
+
     if (!process.env.ADMIN_EMAIL || !process.env.ADMIN_PASSWORD || !process.env.JWT_SECRET) {
       throw new Error('Env variables missing');
     } else {

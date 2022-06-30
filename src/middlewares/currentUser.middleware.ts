@@ -9,6 +9,7 @@ import logger from '../config/logger';
 interface UserPayload {
   id: string;
   utype: UserType;
+  name: string;
 }
 
 declare global {
