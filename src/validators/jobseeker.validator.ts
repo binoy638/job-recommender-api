@@ -1,38 +1,40 @@
-import * as Yup from 'yup';
+import { z } from 'zod';
 
-const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\(\d{2,3}\\)[ \\-]*)|(\d{2,4})[ \\-]*)*?\d{3,4}?[ \\-]*\d{3,4}?$/;
+// const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\(\d{2,3}\\)[ \\-]*)|(\d{2,4})[ \\-]*)*?\d{3,4}?[ \\-]*\d{3,4}?$/;
 
-export const jobseekerValidator = Yup.object().shape({
-  firstName: Yup.string().max(30).min(3).required(),
-  lastName: Yup.string().max(30).min(3).required(),
-  email: Yup.string().email().required(),
-  password: Yup.string().min(6).required(),
-  phone: Yup.string().matches(phoneRegExp, 'Phone number is not valid').min(10).max(10),
-  address: Yup.object().shape({
-    city: Yup.string().required(),
-    state: Yup.string().required(),
-    country: Yup.string().required(),
+export const jobseekerPostSchema = z.object({
+  firstName: z.string().min(2, { message: 'First Name should have at least 2 characters' }),
+  lastName: z.string().min(2, { message: 'Last Name should have at least 2 characters' }),
+  email: z.string().email({ message: 'Invalid email' }),
+  phone: z.string().min(10, { message: 'Phone number should have at least 10 digits' }),
+  password: z.string().min(6, { message: 'Password should have at least 8 characters' }),
+  address: z.object({
+    city: z.string().min(2, { message: 'City should have at least 2 characters' }),
+    state: z.string().min(2, { message: 'State should have at least 2 characters' }),
+    country: z.string().min(2, { message: 'State should have at least 2 characters' }),
   }),
-  skills: Yup.array().of(Yup.string()),
-  jobPreferences: Yup.array().of(Yup.string()).required(),
-  about: Yup.string().required(),
-  education: Yup.array().of(
-    Yup.object().shape({
-      degree: Yup.string().required(),
-      institute: Yup.string().required(),
-      startYear: Yup.number().required(),
-      endYear: Yup.number().required(),
-      percentage: Yup.number().required(),
+  skills: z.array(z.string()),
+  jobPreferences: z.array(z.string()),
+  about: z.string().max(1000, { message: 'About can have at most 1000 characters' }),
+  education: z.array(
+    z.object({
+      degree: z.string(),
+      institute: z.string(),
+      startYear: z.number(),
+      endYear: z.number(),
+      percentage: z.number(),
     })
   ),
-  experience: Yup.array().of(
-    Yup.object().shape({
-      role: Yup.string().required(),
-      company: Yup.string().required(),
-      startYear: Yup.number().required(),
-      endYear: Yup.number().required(),
-      description: Yup.string().required(),
+  experience: z.array(
+    z.object({
+      role: z.string(),
+      company: z.string(),
+      startYear: z.date(),
+      endYear: z.date(),
+      description: z.string(),
     })
   ),
-  resume: Yup.string(),
+  resume: z.string().optional(),
 });
+
+export type JobSeekerFormData = z.infer<typeof jobseekerPostSchema>;

@@ -1,19 +1,19 @@
 import boom from '@hapi/boom';
 import { NextFunction, Request, Response } from 'express';
-import * as Yup from 'yup';
+import { z } from 'zod';
 
 import { RequestPayload, RequestResponse, UserType } from '../@types';
 import logger from '../config/logger';
-import { employerValidator } from '../validators/employer.validator';
-import { jobseekerValidator } from '../validators/jobseeker.validator';
+import { employerPostSchema } from '../validators/employer.validator';
+import { jobseekerPostSchema } from '../validators/jobseeker.validator';
 
-export const payloadValidator =
+export const validateRequest =
   (requestPayload: RequestPayload) =>
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      if (requestPayload?.body) await requestPayload.body.validate(req.body);
-      if (requestPayload?.query) await requestPayload.query.validate(req.query);
-      if (requestPayload?.params) await requestPayload.params.validate(req.params);
+      if (requestPayload?.body) await requestPayload.body.parseAsync(req.body);
+      if (requestPayload?.query) await requestPayload.query.parseAsync(req.query);
+      if (requestPayload?.params) await requestPayload.params.parseAsync(req.params);
       next();
     } catch (error) {
       logger.error(error);
@@ -21,48 +21,18 @@ export const payloadValidator =
     }
   };
 
-export const loginValidator = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-  try {
-    //* check if the request query contains the user type
-    await Yup.object()
-      .shape({
-        utype: Yup.string().oneOf([UserType.EMPLOYER, UserType.JOBSEEKER, UserType.ADMIN]).required(),
-      })
-      .validate(req.query);
-
-    //* check if the request body contains the email and password
-    await Yup.object()
-      .shape({
-        email: Yup.string().email().required(),
-        password: Yup.string().min(6).required(),
-      })
-      .validate(req.body);
-
-    next();
-  } catch (error) {
-    logger.error(error);
-    next(boom.badRequest(RequestResponse.INVALID_PAYLOAD));
-  }
-};
-
 export const registrationValidator = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const utype = req.query.utype as UserType;
   try {
     //* check if utype is valid
-    const isUTypeValid = await Yup.string().oneOf([UserType.EMPLOYER, UserType.JOBSEEKER]).required().isValid(utype);
-
-    if (!isUTypeValid) {
-      logger.error('Invalid user type');
-      next(boom.badRequest(RequestResponse.INVALID_PAYLOAD));
-      return;
-    }
+    await z.nativeEnum(UserType).parseAsync(utype);
 
     if (utype === UserType.EMPLOYER) {
-      await employerValidator.validate(req.body);
+      await employerPostSchema.parseAsync(req.body);
     }
 
     if (utype === UserType.JOBSEEKER) {
-      await jobseekerValidator.validate(req.body);
+      await jobseekerPostSchema.parseAsync(req.body);
     }
     next();
   } catch (error) {

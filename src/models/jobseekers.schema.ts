@@ -6,6 +6,7 @@ import { Document, Model, model, Schema } from 'mongoose';
 
 import { generateID } from '../utils/generateID';
 import { Password } from '../utils/password';
+import { JobSeekerFormData } from '../validators/jobseeker.validator';
 import { Address } from './employer.schema';
 
 interface Education {
@@ -47,7 +48,7 @@ interface JobSeekerDoc extends JobSeekerAttrs, Document {}
 
 interface JobSeekerModel extends Model<JobSeekerDoc> {
   validateJobSeeker(email: string, password: string): Promise<Omit<JobSeekerDoc, 'password'> | undefined>;
-  build(jobSeekerData: JobSeekerAttrs): JobSeekerDoc;
+  build(jobSeekerData: JobSeekerFormData): JobSeekerDoc;
 }
 
 const addressSchema = new Schema<Address>({
@@ -123,7 +124,7 @@ jobSeekerSchema.static('validateJobSeeker', async function (email: string, passw
   return jobSeeker;
 });
 
-jobSeekerSchema.static('build', function (jobseekerData: JobSeekerAttrs) {
+jobSeekerSchema.static('build', function (jobseekerData: JobSeekerFormData) {
   return new this(jobseekerData);
 });
 

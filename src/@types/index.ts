@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import * as Yup from 'yup';
+import { ZodObject } from 'zod';
 
 export enum UserType {
   EMPLOYER = 'employer',
@@ -8,9 +8,9 @@ export enum UserType {
 }
 
 export interface RequestPayload {
-  body?: Yup.ObjectSchema<any> | undefined;
-  query?: Yup.ObjectSchema<any> | undefined;
-  params?: Yup.ObjectSchema<any> | undefined;
+  body?: ZodObject<any>;
+  query?: ZodObject<any>;
+  params?: ZodObject<any>;
 }
 
 export enum RequestResponse {

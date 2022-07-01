@@ -1,13 +1,18 @@
 import { Router } from 'express';
+import { z } from 'zod';
 
 import * as authController from '../controllers/auth.controller';
 import { getCurrentUser } from '../middlewares/currentUser.middleware';
-import { loginValidator, registrationValidator } from '../middlewares/validator.middleware';
+import { registrationValidator, validateRequest } from '../middlewares/validator.middleware';
 
 const authRouter = Router();
 
 authRouter.post('/signup', registrationValidator, authController.signup);
-authRouter.post('/signin', loginValidator, authController.signin);
+authRouter.post(
+  '/signin',
+  validateRequest({ body: z.object({ email: z.string().email(), password: z.string() }) }),
+  authController.signin
+);
 authRouter.post('/signout', authController.signout);
 
 //* this route gives all the information about the current user from db

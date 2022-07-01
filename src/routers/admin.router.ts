@@ -1,16 +1,16 @@
 import { Router } from 'express';
-import * as Yup from 'yup';
+import { z } from 'zod';
 
 import { UserType } from '../@types';
 import * as adminController from '../controllers/admin.controller';
 import { getCurrentUser } from '../middlewares/currentUser.middleware';
 import { userTypeValidator } from '../middlewares/userTypeValidator.middleware';
-import { payloadValidator } from '../middlewares/validator.middleware';
+import { validateRequest } from '../middlewares/validator.middleware';
 
 const adminRouter = Router();
 
-const employerIdValidator = { params: Yup.object().shape({ id: Yup.number().required() }) };
-const addSkillBodyValidator = { body: Yup.object().shape({ name: Yup.string().required() }) };
+const employerIdValidator = { params: z.object({ id: z.number() }) };
+const addSkillBodyValidator = { body: z.object({ name: z.string() }) };
 
 adminRouter.get('/employers', getCurrentUser, userTypeValidator(UserType.ADMIN), adminController.getEmployers);
 
@@ -18,7 +18,7 @@ adminRouter.put(
   '/employer/verify/:id',
   getCurrentUser,
   userTypeValidator(UserType.ADMIN),
-  payloadValidator(employerIdValidator),
+  validateRequest(employerIdValidator),
   adminController.verifyEmployer
 );
 
@@ -26,7 +26,7 @@ adminRouter.put(
   '/employer/ban/:id',
   getCurrentUser,
   userTypeValidator(UserType.ADMIN),
-  payloadValidator(employerIdValidator),
+  validateRequest(employerIdValidator),
   adminController.banEmployer
 );
 
@@ -34,7 +34,7 @@ adminRouter.post(
   '/skills',
   getCurrentUser,
   userTypeValidator(UserType.ADMIN),
-  payloadValidator(addSkillBodyValidator),
+  validateRequest(addSkillBodyValidator),
   adminController.addSKill
 );
 
@@ -42,7 +42,7 @@ adminRouter.post(
   '/jobcategory',
   getCurrentUser,
   userTypeValidator(UserType.ADMIN),
-  payloadValidator(addSkillBodyValidator),
+  validateRequest(addSkillBodyValidator),
   adminController.addJobCategory
 );
 

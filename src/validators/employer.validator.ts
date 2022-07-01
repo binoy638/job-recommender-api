@@ -1,25 +1,27 @@
-import * as Yup from 'yup';
+import { z } from 'zod';
 
-const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\(\d{2,3}\\)[ \\-]*)|(\d{2,4})[ \\-]*)*?\d{3,4}?[ \\-]*\d{3,4}?$/;
+// const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\(\d{2,3}\\)[ \\-]*)|(\d{2,4})[ \\-]*)*?\d{3,4}?[ \\-]*\d{3,4}?$/;
 
-export const employerValidator = Yup.object().shape({
-  firstName: Yup.string().max(30).min(3).required(),
-  lastName: Yup.string().max(30).min(3).required(),
-  email: Yup.string().email().required(),
-  password: Yup.string().min(6).required(),
-  phone: Yup.string().matches(phoneRegExp, 'Phone number is not valid').min(10).max(10),
-  company: Yup.object().shape({
-    name: Yup.string().min(3).required(),
-    description: Yup.string().max(500).required(),
-    yearFounded: Yup.number().required(),
-    website: Yup.string().url().required(),
-    logo: Yup.string(),
-    address: Yup.object()
-      .shape({
-        city: Yup.string().required(),
-        state: Yup.string().required(),
-        country: Yup.string().required(),
-      })
-      .required(),
+export const employerPostSchema = z.object({
+  firstName: z.string().min(2, { message: 'First Name should have at least 2 characters' }),
+  lastName: z.string().min(2, { message: 'Last Name should have at least 2 characters' }),
+  email: z.string().email({ message: 'Invalid email' }),
+  phone: z.string().min(10, { message: 'Phone number should have at least 10 digits' }),
+  password: z.string().min(6, { message: 'Password should have at least 8 characters' }),
+  company: z.object({
+    name: z.string().min(2, { message: 'Company Name should have at least 2 characters' }),
+    description: z.string().min(2, { message: 'Description should have at least 10 characters' }).max(1000, {
+      message: 'Description can have at most least 1000 characters',
+    }),
+    employees: z.number().min(1, { message: 'At least 1 employee' }).optional(),
+    yearFounded: z.number().min(1900, { message: 'Year founded should be at least 1900' }),
+    website: z.string().url({ message: 'Invalid website' }),
+    address: z.object({
+      city: z.string().min(2, { message: 'City should have at least 2 characters' }),
+      state: z.string().min(2, { message: 'State should have at least 2 characters' }),
+      country: z.string().min(2, { message: 'State should have at least 2 characters' }),
+    }),
   }),
 });
+
+export type EmployerFormData = z.infer<typeof employerPostSchema>;

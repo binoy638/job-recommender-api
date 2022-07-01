@@ -1,11 +1,15 @@
 import { Document, model, Schema } from 'mongoose';
 
 import { generateID } from '../utils/generateID';
-import { Address, addressSchema } from './employer.schema';
 
-export enum JobMode {
+export enum WorkHours {
   FULLTIME = 'FULLTIME',
   PARTTIME = 'PARTTIME',
+}
+
+export enum JobMode {
+  WFH = 'WFH',
+  WFO = 'WFO',
 }
 
 interface Salary {
@@ -20,7 +24,7 @@ export interface JobAttrs {
   requiredSkills?: Schema.Types.ObjectId[];
   mode: JobMode;
   numberOfOpenings: number;
-  location?: Address[];
+  workHours: WorkHours;
   category: Schema.Types.ObjectId;
   salary?: Salary;
   applyBy: Schema.Types.Date;
@@ -35,11 +39,11 @@ const jobSchema = new Schema<JobDoc>({
   jobTitle: { type: String, required: true },
   employer: { type: Schema.Types.ObjectId, ref: 'Employer', required: true },
   description: { type: String, required: true },
-  mode: { type: String, enum: [JobMode.FULLTIME, JobMode.PARTTIME] },
+  mode: { type: String, enum: [JobMode.WFH, JobMode.WFO] },
   requiredSkills: [{ type: Schema.Types.ObjectId, ref: 'Skill' }],
   numberOfOpenings: { type: Number, required: true },
   category: { type: Schema.Types.ObjectId, ref: 'JobCategories', required: true },
-  location: { type: [addressSchema] },
+  workHours: { type: String, enum: [WorkHours.FULLTIME, WorkHours.PARTTIME] },
   salary: {
     negotiable: { type: Boolean, default: false },
     min: { type: Number },

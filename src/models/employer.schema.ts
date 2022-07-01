@@ -4,6 +4,7 @@ import { Document, Model, model, Schema } from 'mongoose';
 
 import { generateID } from '../utils/generateID';
 import { Password } from '../utils/password';
+import { EmployerFormData } from '../validators/employer.validator';
 
 export interface Address {
   city: string;
@@ -39,7 +40,7 @@ interface EmployerDoc extends EmployerAttrs, Document {}
 // extend the Model interface with a static method to validate a employer
 interface EmployerModel extends Model<EmployerDoc> {
   validateEmployer(email: string, password: string): Promise<Omit<EmployerDoc, 'password'> | undefined>;
-  build(employerData: EmployerAttrs): EmployerDoc;
+  build(employerData: EmployerFormData): EmployerDoc;
 }
 
 export const addressSchema = new Schema<Address>({
@@ -98,7 +99,7 @@ employerSchema.static('validateEmployer', async function (email: string, passwor
   return employer;
 });
 
-employerSchema.static('build', function (employerData: EmployerAttrs) {
+employerSchema.static('build', function (employerData: EmployerFormData) {
   return new this(employerData);
 });
 

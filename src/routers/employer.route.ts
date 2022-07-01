@@ -4,8 +4,8 @@ import { UserType } from '../@types';
 import * as employerController from '../controllers/employer.controller';
 import { getCurrentUser } from '../middlewares/currentUser.middleware';
 import { userTypeValidator } from '../middlewares/userTypeValidator.middleware';
-import { payloadValidator } from '../middlewares/validator.middleware';
-import { jobAddValidator, jobUpdateValidator } from '../validators/job.validator';
+import { validateRequest } from '../middlewares/validator.middleware';
+import { jobPostSchema } from '../validators/job.validator';
 
 const employerRouter = Router();
 
@@ -20,7 +20,7 @@ employerRouter.post(
   '/job',
   getCurrentUser,
   userTypeValidator(UserType.EMPLOYER),
-  payloadValidator(jobAddValidator),
+  validateRequest({ body: jobPostSchema }),
   employerController.addJob
 );
 
@@ -32,7 +32,7 @@ employerRouter.put(
   '/job/:id',
   getCurrentUser,
   userTypeValidator(UserType.EMPLOYER),
-  payloadValidator(jobUpdateValidator),
+  validateRequest({ body: jobPostSchema }),
   employerController.updateJob
 );
 

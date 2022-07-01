@@ -37,6 +37,7 @@ export const getJobs = async (req: Request, res: Response, next: NextFunction): 
 export const addJob = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const body = req.body as Omit<JobDoc, 'employer'>;
   const { currentUser } = req;
+
   try {
     const newJob = await Job.create({ ...body, employer: currentUser.id });
     res.status(201).send(newJob);

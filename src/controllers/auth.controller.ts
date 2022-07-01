@@ -10,6 +10,8 @@ import logger from '../config/logger';
 import { Admin } from '../models/admin.schema';
 import { Employer } from '../models/employer.schema';
 import { JobSeeker } from '../models/jobseekers.schema';
+import { EmployerFormData } from '../validators/employer.validator';
+import { JobSeekerFormData } from '../validators/jobseeker.validator';
 
 export const signup = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const utype = req.query.utype as UserType;
@@ -21,7 +23,7 @@ export const signup = async (req: Request, res: Response, next: NextFunction): P
 
   try {
     if (utype === UserType.EMPLOYER) {
-      const { body } = req;
+      const { body }: { body: EmployerFormData } = req;
       const existingEmployer = await Employer.findOne({ email: body.email });
       if (existingEmployer) {
         next(boom.badRequest('Employer already exists'));
@@ -41,7 +43,7 @@ export const signup = async (req: Request, res: Response, next: NextFunction): P
       return;
     }
     if (utype === UserType.JOBSEEKER) {
-      const { body } = req;
+      const { body }: { body: JobSeekerFormData } = req;
 
       const existingJobSeeker = await JobSeeker.findOne({ email: body.email });
       if (existingJobSeeker) {
