@@ -36,7 +36,6 @@ export const registrationValidator = async (req: Request, res: Response, next: N
     }
     next();
   } catch (error) {
-    console.log('here');
     logger.error(error);
     next(boom.badRequest(RequestResponse.INVALID_PAYLOAD));
   }

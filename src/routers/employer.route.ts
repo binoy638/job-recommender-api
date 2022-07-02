@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import { z } from 'zod';
 
 import { UserType } from '../@types';
 import * as employerController from '../controllers/employer.controller';
@@ -37,5 +38,21 @@ employerRouter.put(
 );
 
 employerRouter.delete('/job/:id', getCurrentUser, userTypeValidator(UserType.EMPLOYER), employerController.deleteJob);
+
+employerRouter.get(
+  '/job/applications/:jobId',
+  getCurrentUser,
+  userTypeValidator(UserType.EMPLOYER),
+  validateRequest({ params: z.object({ jobId: z.string() }) }),
+  employerController.getJobApplications
+);
+
+employerRouter.get(
+  '/job/application/:id',
+  getCurrentUser,
+  userTypeValidator(UserType.EMPLOYER),
+  validateRequest({ params: z.object({ id: z.number() }) }),
+  employerController.getJobApplications
+);
 
 export default employerRouter;

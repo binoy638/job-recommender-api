@@ -5,13 +5,13 @@ import { NextFunction, Request, Response } from 'express';
 import { RequestResponse } from '../@types';
 import logger from '../config/logger';
 import { Employer } from '../models/employer.schema';
+import { JobApplication } from '../models/jobApplication.schema';
 import { Job, JobDoc } from '../models/jobs.schema';
 
 export const getEmployerStatus = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const { currentUser } = req;
   try {
     const employerStatus = await Employer.findById(currentUser.id).select('isVerified isBanned');
-    console.log(employerStatus);
     if (!employerStatus) {
       next(boom.badRequest('employer does not exist'));
       return;
@@ -27,7 +27,7 @@ export const getJobs = async (req: Request, res: Response, next: NextFunction): 
   const { currentUser } = req;
   try {
     const jobs = await Job.find({ employer: currentUser.id }).lean();
-    res.send(jobs);
+    res.send({ jobs });
   } catch (error) {
     logger.error(error);
     next(boom.internal(RequestResponse.SERVER_ERROR));
@@ -93,6 +93,30 @@ export const deleteJob = async (req: Request, res: Response, next: NextFunction)
       return;
     }
     res.status(204).send(deletedJob);
+  } catch (error) {
+    logger.error(error);
+    next(boom.internal(RequestResponse.SERVER_ERROR));
+  }
+};
+
+export const getJobApplications = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  const { jobId } = req.params;
+  try {
+    const applications = await JobApplication.find({ job: jobId }).lean();
+
+    res.send({ applications });
+  } catch (error) {
+    logger.error(error);
+    next(boom.internal(RequestResponse.SERVER_ERROR));
+  }
+};
+
+export const getJobApplication = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  const { id } = req.params;
+  try {
+    const application = await JobApplication.findOne({ id }).lean();
+
+    res.send({ application });
   } catch (error) {
     logger.error(error);
     next(boom.internal(RequestResponse.SERVER_ERROR));
