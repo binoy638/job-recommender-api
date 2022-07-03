@@ -6,6 +6,7 @@ import * as employerController from '../controllers/employer.controller';
 import { getCurrentUser } from '../middlewares/currentUser.middleware';
 import { userTypeValidator } from '../middlewares/userTypeValidator.middleware';
 import { validateRequest } from '../middlewares/validator.middleware';
+import { employerPostSchema } from '../validators/employer.validator';
 import { jobPostSchema } from '../validators/job.validator';
 
 const employerRouter = Router();
@@ -53,6 +54,14 @@ employerRouter.get(
   userTypeValidator(UserType.EMPLOYER),
   validateRequest({ params: z.object({ id: z.number() }) }),
   employerController.getJobApplications
+);
+
+employerRouter.put(
+  '/profile-update',
+  getCurrentUser,
+  userTypeValidator(UserType.EMPLOYER),
+  validateRequest({ body: employerPostSchema.omit({ password: true }) }),
+  employerController.profileUpdate
 );
 
 export default employerRouter;

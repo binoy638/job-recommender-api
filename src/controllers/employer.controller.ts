@@ -8,6 +8,21 @@ import { Employer } from '../models/employer.schema';
 import { JobApplication } from '../models/jobApplication.schema';
 import { Job, JobDoc } from '../models/jobs.schema';
 
+export const profileUpdate = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  const { currentUser, body } = req;
+  try {
+    const employerStatus = await Employer.findOneAndUpdate({ _id: currentUser.id }, body);
+    if (!employerStatus) {
+      next(boom.badRequest('employer does not exist'));
+      return;
+    }
+    res.sendStatus(204);
+  } catch (error) {
+    logger.error(error);
+    next(boom.internal(RequestResponse.SERVER_ERROR));
+  }
+};
+
 export const getEmployerStatus = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const { currentUser } = req;
   try {
