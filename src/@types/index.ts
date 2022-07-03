@@ -17,3 +17,7 @@ export enum RequestResponse {
   INVALID_PAYLOAD = 'Invalid request payload',
   SERVER_ERROR = 'Internal server error',
 }
+
+export enum Pagination {
+  JOB_PAGE_SIZE = 12,
+}

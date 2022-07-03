@@ -45,7 +45,7 @@ const jobSchema = new Schema<JobDoc>(
     mode: { type: String, enum: [JobMode.WFH, JobMode.WFO] },
     requiredSkills: [{ type: Schema.Types.ObjectId, ref: 'Skill' }],
     numberOfOpenings: { type: Number, required: true },
-    category: { type: Schema.Types.ObjectId, ref: 'JobCategories', required: true },
+    category: { type: Schema.Types.ObjectId, ref: 'JobCategory', required: true },
     workHours: { type: String, enum: [WorkHours.FULLTIME, WorkHours.PARTTIME] },
     salary: {
       negotiable: { type: Boolean, default: false },
