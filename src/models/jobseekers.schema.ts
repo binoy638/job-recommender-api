@@ -62,7 +62,6 @@ const educationSchema = new Schema<Education>({
   institute: { type: String, required: true },
   startYear: { type: Number, required: true },
   endYear: { type: Number },
-  percentage: { type: Number, required: true },
 });
 const experienceSchema = new Schema<Experience>({
   role: { type: String, required: true },
@@ -83,8 +82,8 @@ const jobSeekerSchema = new Schema<JobSeekerDoc>(
     address: { type: addressSchema, required: true },
     dob: { type: Schema.Types.Date, required: true },
     about: { type: String, required: true },
-    education: { type: [educationSchema], required: true },
-    experience: { type: [experienceSchema] },
+    education: { type: [educationSchema], default: [] },
+    experience: { type: [experienceSchema], default: [] },
     skills: {
       type: [
         {
