@@ -61,15 +61,15 @@ const educationSchema = new Schema<Education>({
   degree: { type: String, required: true },
   institute: { type: String, required: true },
   startYear: { type: Number, required: true },
-  endYear: { type: Number, required: true },
+  endYear: { type: Number },
   percentage: { type: Number, required: true },
 });
 const experienceSchema = new Schema<Experience>({
   role: { type: String, required: true },
   company: { type: String, required: true },
   startYear: { type: Number, required: true },
-  endYear: { type: Number, required: true },
-  description: { type: String, required: true },
+  endYear: { type: Number },
+  description: { type: String },
 });
 
 const jobSeekerSchema = new Schema<JobSeekerDoc>(
