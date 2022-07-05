@@ -22,15 +22,14 @@ export const jobseekerPostSchema = z.object({
       institute: z.string(),
       startYear: z.number(),
       endYear: z.number(),
-      percentage: z.number(),
     })
   ),
   experience: z.array(
     z.object({
       role: z.string(),
       company: z.string(),
-      startYear: z.date(),
-      endYear: z.date(),
+      startYear: z.number(),
+      endYear: z.number(),
       description: z.string(),
     })
   ),
