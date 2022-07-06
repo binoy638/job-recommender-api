@@ -117,7 +117,12 @@ export const deleteJob = async (req: Request, res: Response, next: NextFunction)
 export const getJobApplications = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const { id } = req.params;
   try {
-    const applications = await JobApplication.find({ job: id }).lean();
+    const job = await Job.findOne({ id }).lean();
+    if (!job) {
+      next(boom.notFound('Job not found'));
+      return;
+    }
+    const applications = await JobApplication.find({ job: job._id }).populate('jobSeeker').lean();
 
     res.send({ applications });
   } catch (error) {
