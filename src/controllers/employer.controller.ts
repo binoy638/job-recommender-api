@@ -115,9 +115,9 @@ export const deleteJob = async (req: Request, res: Response, next: NextFunction)
 };
 
 export const getJobApplications = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-  const { jobId } = req.params;
+  const { id } = req.params;
   try {
-    const applications = await JobApplication.find({ job: jobId }).lean();
+    const applications = await JobApplication.find({ job: id }).lean();
 
     res.send({ applications });
   } catch (error) {

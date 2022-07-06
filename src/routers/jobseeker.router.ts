@@ -5,6 +5,7 @@ import * as jobseekerController from '../controllers/jobseeker.controller';
 import { getCurrentUser } from '../middlewares/currentUser.middleware';
 import { userTypeValidator } from '../middlewares/userTypeValidator.middleware';
 import { validateRequest } from '../middlewares/validator.middleware';
+import { ID } from '../validators';
 import { JobApplicationPostSchema } from '../validators/job.validator';
 import { jobseekerPostSchema } from '../validators/jobseeker.validator';
 
@@ -26,11 +27,13 @@ jobseekerRouter.post(
 );
 
 jobseekerRouter.put(
-  '/profile-update',
+  '/profile',
   getCurrentUser,
   userTypeValidator(UserType.JOBSEEKER),
   validateRequest({ body: jobseekerPostSchema.omit({ password: true }) }),
   jobseekerController.profileUpdate
 );
+
+jobseekerRouter.get('/profile/:id', validateRequest({ params: ID }), jobseekerController.getJobSeekerProfile);
 
 export default jobseekerRouter;
