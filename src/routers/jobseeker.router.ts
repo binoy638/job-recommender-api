@@ -1,0 +1,36 @@
+import { Router } from 'express';
+
+import { UserType } from '../@types';
+import * as jobseekerController from '../controllers/jobseeker.controller';
+import { getCurrentUser } from '../middlewares/currentUser.middleware';
+import { userTypeValidator } from '../middlewares/userTypeValidator.middleware';
+import { validateRequest } from '../middlewares/validator.middleware';
+import { JobApplicationPostSchema } from '../validators/job.validator';
+import { jobseekerPostSchema } from '../validators/jobseeker.validator';
+
+const jobseekerRouter = Router();
+
+jobseekerRouter.get(
+  '/applications',
+  getCurrentUser,
+  userTypeValidator(UserType.JOBSEEKER),
+  jobseekerController.getApplications
+);
+
+jobseekerRouter.post(
+  '/application',
+  getCurrentUser,
+  userTypeValidator(UserType.JOBSEEKER),
+  validateRequest({ body: JobApplicationPostSchema }),
+  jobseekerController.submitApplication
+);
+
+jobseekerRouter.put(
+  '/profile-update',
+  getCurrentUser,
+  userTypeValidator(UserType.JOBSEEKER),
+  validateRequest({ body: jobseekerPostSchema.omit({ password: true }) }),
+  jobseekerController.profileUpdate
+);
+
+export default jobseekerRouter;

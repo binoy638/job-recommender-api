@@ -11,8 +11,8 @@ import { Job, JobDoc } from '../models/jobs.schema';
 export const profileUpdate = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const { currentUser, body } = req;
   try {
-    const employerStatus = await Employer.findOneAndUpdate({ _id: currentUser.id }, body);
-    if (!employerStatus) {
+    const updatedEmployer = await Employer.findOneAndUpdate({ _id: currentUser.id }, body);
+    if (!updatedEmployer) {
       next(boom.badRequest('employer does not exist'));
       return;
     }

@@ -15,6 +15,7 @@ import adminRouter from './routers/admin.router';
 import authRouter from './routers/auth.router';
 import employerRouter from './routers/employer.route';
 import generalRouter from './routers/generalRouter';
+import jobseekerRouter from './routers/jobseeker.router';
 import testRouter from './routers/test.router';
 
 dotenv.config();
@@ -47,6 +48,7 @@ app.use('/api', generalRouter);
 app.use('/api/auth', authRouter);
 app.use('/api/admin', adminRouter);
 app.use('/api/employer', employerRouter);
+app.use('/api/jobseeker', jobseekerRouter);
 
 if (process.env.NODE_ENV === 'development') {
   app.use('/api/test', testRouter);

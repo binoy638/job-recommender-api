@@ -33,3 +33,7 @@ export const jobPostSchema = z.object({
 });
 
 export type JobFormData = z.infer<typeof jobPostSchema>;
+
+export const JobApplicationPostSchema = z.object({
+  job: z.string(),
+});

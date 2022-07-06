@@ -91,7 +91,6 @@ export const getJobs = async (req: Request, res: Response, next: NextFunction): 
       .skip(skipCount)
       .limit(Pagination.JOB_PAGE_SIZE)
       .lean();
-    console.log(jobs[0].id);
 
     res.send({ jobs });
   } catch (error) {
@@ -106,7 +105,6 @@ export const getJob = async (req: Request, res: Response, next: NextFunction): P
     const job = await Job.findOne({ id })
       .populate([{ path: 'employer', select: 'company' }, { path: 'category' }, { path: 'requiredSkills' }])
       .lean();
-    console.log(job);
     if (!job) {
       next(boom.notFound('Job not found'));
       return;
