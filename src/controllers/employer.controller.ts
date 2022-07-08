@@ -149,7 +149,6 @@ export const changeJobApplicationStatus = async (req: Request, res: Response, ne
   const { id } = req.params;
   const { status } = req.body;
 
-  console.log({ status });
   try {
     //! check if the doc updated or not
     await JobApplication.findOneAndUpdate({ id }, { status });
