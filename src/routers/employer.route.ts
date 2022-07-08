@@ -1,10 +1,12 @@
 import { Router } from 'express';
+import { z } from 'zod';
 
 import { UserType } from '../@types';
 import * as employerController from '../controllers/employer.controller';
 import { getCurrentUser } from '../middlewares/currentUser.middleware';
 import { userTypeValidator } from '../middlewares/userTypeValidator.middleware';
 import { validateRequest } from '../middlewares/validator.middleware';
+import { ApplicationStatus } from '../models/jobApplication.schema';
 import { ID } from '../validators';
 import { employerPostSchema } from '../validators/employer.validator';
 import { jobPostSchema } from '../validators/job.validator';
@@ -65,7 +67,7 @@ employerRouter.get(
   getCurrentUser,
   userTypeValidator(UserType.EMPLOYER),
   validateRequest({ params: ID }),
-  employerController.getJobApplications
+  employerController.getJobApplication
 );
 
 employerRouter.put(
@@ -74,6 +76,14 @@ employerRouter.put(
   userTypeValidator(UserType.EMPLOYER),
   validateRequest({ body: employerPostSchema.omit({ password: true }) }),
   employerController.profileUpdate
+);
+
+employerRouter.put(
+  '/job/application/update-status/:id',
+  getCurrentUser,
+  userTypeValidator(UserType.EMPLOYER),
+  validateRequest({ params: ID, body: z.object({ status: z.nativeEnum(ApplicationStatus) }) }),
+  employerController.changeJobApplicationStatus
 );
 
 export default employerRouter;

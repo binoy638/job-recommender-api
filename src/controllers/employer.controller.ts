@@ -122,7 +122,9 @@ export const getJobApplications = async (req: Request, res: Response, next: Next
       next(boom.notFound('Job not found'));
       return;
     }
-    const applications = await JobApplication.find({ job: job._id }).populate('jobSeeker').lean();
+    const applications = await JobApplication.find({ job: job._id })
+      .populate([{ path: 'jobSeeker', select: '-password', populate: { path: 'skills' } }])
+      .lean();
 
     res.send({ applications });
   } catch (error) {
@@ -137,6 +139,21 @@ export const getJobApplication = async (req: Request, res: Response, next: NextF
     const application = await JobApplication.findOne({ id }).lean();
 
     res.send({ application });
+  } catch (error) {
+    logger.error(error);
+    next(boom.internal(RequestResponse.SERVER_ERROR));
+  }
+};
+
+export const changeJobApplicationStatus = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  console.log('inside');
+  const { id } = req.params;
+  const { status } = req.body;
+  try {
+    //! check if the doc updated or not
+    await JobApplication.findOneAndUpdate({ id }, { status });
+
+    res.sendStatus(204);
   } catch (error) {
     logger.error(error);
     next(boom.internal(RequestResponse.SERVER_ERROR));

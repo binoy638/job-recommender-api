@@ -65,7 +65,7 @@ export const getJobSeekerProfile = async (req: Request, res: Response, next: Nex
   const { id } = req.params;
   console.log({ id });
   try {
-    const jobseeker = await JobSeeker.findOne({ id });
+    const jobseeker = await JobSeeker.findOne({ id }).populate('skills');
     if (!jobseeker) {
       next(boom.notFound('JobSeeker not found'));
       return;
