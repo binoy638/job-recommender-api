@@ -11,9 +11,10 @@ import { EmployerAttrs } from '../models/employer.schema';
 import { JobAttrs, JobMode, WorkHours } from '../models/jobs.schema';
 import { JobSeekerAttrs } from '../models/jobseekers.schema';
 
-function createRandomEmployer(): Omit<EmployerAttrs, 'createdAt' | 'updatedAt'> {
+export function createRandomEmployer(): Omit<EmployerAttrs, 'createdAt' | 'updatedAt'> {
   return {
     firstName: faker.name.firstName(),
+    // id: generateID(),
     lastName: faker.name.lastName(),
     email: faker.internet.email(),
     password: faker.internet.password(),
@@ -31,7 +32,7 @@ function createRandomEmployer(): Omit<EmployerAttrs, 'createdAt' | 'updatedAt'> 
         country: faker.address.country(),
       },
     },
-    isVerified: false,
+    isVerified: true,
     isBanned: false,
   };
 }
@@ -54,7 +55,15 @@ const degrees = [
   'Bachelors in Architecture',
   'Bachelors in Design',
   'Bachelors in International Relations',
-  'Bachelors in Language Studies]',
+  'Bachelors in Language Studies',
+  'Masters in Computer Science and IT',
+  'Masters in Electrical Engineering',
+  'Masters in Civil Engineering and Construction',
+  'Masters in Medicine',
+  'Masters in Architecture',
+  'Masters in Design',
+  'Masters in International Relations',
+  'Masters in Language Studies',
 ];
 
 function createRandomJobSeeker(): Omit<JobSeekerAttrs, 'createdAt' | 'updatedAt'> {
@@ -105,15 +114,14 @@ export const getRandomJobSeekerData = async (req: Request, res: Response, next: 
   }
 };
 
-function createRandomJob(): JobAttrs {
+export function createRandomJob(): Partial<JobAttrs> {
   return {
     jobTitle: faker.name.jobTitle(),
-    employer: '62a100dbdb6897b7f08a285a',
-    requiredSkills: ['62a0a8863306a92e3b9fa2d6' as unknown as Schema.Types.ObjectId],
+    // id: generateID(),
+    // employer: '62a100dbdb6897b7f08a285a',
     numberOfOpenings: Math.floor(Math.random() * 10),
-    mode: JobMode.WFO,
-    workHours: WorkHours.FULLTIME,
-    category: '62a10b237801fd275abeb857' as unknown as Schema.Types.ObjectId,
+    mode: Math.floor(Math.random() * 100) % 2 === 0 ? JobMode.WFO : JobMode.WFH,
+    workHours: Math.floor(Math.random() * 100) % 2 === 0 ? WorkHours.FULLTIME : WorkHours.PARTTIME,
     // eslint-disable-next-line unicorn/numeric-separators-style
     applyBy: faker.date.future() as unknown as Schema.Types.Date,
     startDate: faker.date.future() as unknown as Schema.Types.Date,

@@ -51,12 +51,13 @@ export const searchSkills = async (req: Request, res: Response, next: NextFuncti
 
 export const getSkills = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const page = req.query.page as unknown as number;
-  const limit = req.query.offset as unknown as number;
+  const limit = req.query.limit as unknown as number;
 
   const skipIndex = (page - 1) * limit;
   try {
     const skills = await Skill.find().skip(skipIndex).limit(limit).lean();
-    res.send({ skills });
+    const count = await Skill.countDocuments();
+    res.send({ skills, count });
   } catch (error) {
     logger.error(error);
     next(boom.internal(RequestResponse.SERVER_ERROR));
