@@ -59,7 +59,7 @@ export const addSKill = async (req: Request, res: Response, next: NextFunction):
   try {
     const existingSkill = await Skill.findOne({ name });
     if (existingSkill) {
-      next(boom.badRequest('Skill already exists'));
+      next(boom.badData('Skill already exists'));
       return;
     }
     await Skill.create({ name });

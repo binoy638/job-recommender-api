@@ -9,7 +9,17 @@ const generalRouter = Router();
 const numberString = z.string().regex(/^\d+$/).transform(Number);
 
 //* get all skills
-generalRouter.get('/skills', validateRequest({ query: z.object({ q: z.string() }) }), generalController.searchSkills);
+generalRouter.get(
+  '/search/skills',
+  validateRequest({ query: z.object({ q: z.string() }) }),
+  generalController.searchSkills
+);
+
+generalRouter.get(
+  '/skills',
+  validateRequest({ query: z.object({ page: numberString, limit: numberString }) }),
+  generalController.getSkills
+);
 
 //* get all job categories
 generalRouter.get('/job-categories', generalController.getJobCategories);

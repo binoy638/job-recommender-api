@@ -10,7 +10,6 @@ import { JobCategory } from '../models/jobCategories.schema';
 import { Job } from '../models/jobs.schema';
 import { Skill } from '../models/skills.schema';
 
-//! need pagination support
 export const getJobCategories = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     const jobCategories = await JobCategory.find({}).lean();
@@ -44,6 +43,20 @@ export const searchSkills = async (req: Request, res: Response, next: NextFuncti
       },
     ]);
     res.send(skills);
+  } catch (error) {
+    logger.error(error);
+    next(boom.internal(RequestResponse.SERVER_ERROR));
+  }
+};
+
+export const getSkills = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  const page = req.query.page as unknown as number;
+  const limit = req.query.offset as unknown as number;
+
+  const skipIndex = (page - 1) * limit;
+  try {
+    const skills = await Skill.find().skip(skipIndex).limit(limit).lean();
+    res.send({ skills });
   } catch (error) {
     logger.error(error);
     next(boom.internal(RequestResponse.SERVER_ERROR));
