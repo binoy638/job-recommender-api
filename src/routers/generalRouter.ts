@@ -3,6 +3,7 @@ import { z } from 'zod';
 
 import * as generalController from '../controllers/general.controller';
 import { validateRequest } from '../middlewares/validator.middleware';
+import { jobSearchSchema } from '../validators/job.validator';
 
 const generalRouter = Router();
 
@@ -53,5 +54,7 @@ generalRouter.get(
   validateRequest({ params: z.object({ stateID: numberString }) }),
   generalController.getCitiesByState
 );
+
+generalRouter.get('/search/jobs', validateRequest({ query: jobSearchSchema }), generalController.searchJobs);
 
 export default generalRouter;

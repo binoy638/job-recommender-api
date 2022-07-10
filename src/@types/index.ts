@@ -21,3 +21,11 @@ export enum RequestResponse {
 export enum Pagination {
   JOB_PAGE_SIZE = 12,
 }
+
+export enum JobSearchType {
+  SKILL = 'skill',
+  LOCATION = 'location',
+  CATEGORY = 'category',
+  JOB_TITLE = 'jobTitle',
+  COMPANY = 'company',
+}

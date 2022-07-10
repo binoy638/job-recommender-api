@@ -1,14 +1,16 @@
 import boom from '@hapi/boom';
 import { NextFunction, Request, Response } from 'express';
 
-import { Pagination, RequestResponse } from '../@types';
+import { JobSearchType, Pagination, RequestResponse } from '../@types';
 import logger from '../config/logger';
 import { City } from '../models/city-state-country/city.schema';
 import { Country } from '../models/city-state-country/country.schema';
 import { State } from '../models/city-state-country/state.schema';
+import { Employer } from '../models/employer.schema';
 import { JobCategory } from '../models/jobCategories.schema';
-import { Job } from '../models/jobs.schema';
+import { Job, JobDoc } from '../models/jobs.schema';
 import { Skill } from '../models/skills.schema';
+import { JobSearchData } from '../validators/job.validator';
 
 export const getJobCategories = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
@@ -43,6 +45,70 @@ export const searchSkills = async (req: Request, res: Response, next: NextFuncti
       },
     ]);
     res.send(skills);
+  } catch (error) {
+    logger.error(error);
+    next(boom.internal(RequestResponse.SERVER_ERROR));
+  }
+};
+
+export const searchJobs = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  const data = req.query as unknown as JobSearchData;
+
+  const { page, limit, query, type } = data;
+
+  const skipIndex = (page - 1) * limit;
+
+  let jobs: JobDoc[] = [];
+  try {
+    if (type === JobSearchType.JOB_TITLE) {
+      jobs = await Job.find({ jobTitle: { $regex: query, $options: 'i' } })
+        .populate([{ path: 'employer', select: 'company' }, { path: 'category' }, { path: 'requiredSkills' }])
+        .skip(skipIndex)
+        .limit(limit)
+        .lean();
+    }
+    if (type === JobSearchType.COMPANY) {
+      const employers = await Employer.find({ 'company.name': { $regex: query, $options: 'i' } });
+
+      if (employers.length > 0) {
+        const empIDs = employers.map(emp => emp._id);
+        jobs = await Job.find({ employer: { $in: empIDs } })
+          .populate([{ path: 'employer', select: 'company' }, { path: 'category' }, { path: 'requiredSkills' }])
+          .skip(skipIndex)
+          .limit(limit)
+          .lean();
+      }
+    }
+    if (type === JobSearchType.LOCATION) {
+      const [city] = query.split(',');
+      const employers = await Employer.find({ 'address.$.city': city });
+      if (employers.length > 0) {
+        const empIDs = employers.map(emp => emp._id);
+        jobs = await Job.find({ employer: { $in: empIDs } })
+          .populate([{ path: 'employer', select: 'company' }, { path: 'category' }, { path: 'requiredSkills' }])
+          .skip(skipIndex)
+          .limit(limit)
+          .lean();
+      }
+    }
+
+    if (type === JobSearchType.SKILL) {
+      jobs = await Job.find({ requiredSkills: query })
+        .populate([{ path: 'employer', select: 'company' }, { path: 'category' }, { path: 'requiredSkills' }])
+        .skip(skipIndex)
+        .limit(limit)
+        .lean();
+    }
+
+    if (type === JobSearchType.CATEGORY) {
+      jobs = await Job.find({ category: query })
+        .populate([{ path: 'employer', select: 'company' }, { path: 'category' }, { path: 'requiredSkills' }])
+        .skip(skipIndex)
+        .limit(limit)
+        .lean();
+    }
+
+    res.send({ jobs });
   } catch (error) {
     logger.error(error);
     next(boom.internal(RequestResponse.SERVER_ERROR));

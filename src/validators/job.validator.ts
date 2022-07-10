@@ -1,6 +1,9 @@
 import { z } from 'zod';
 
+import { JobSearchType } from '../@types';
 import { JobMode, WorkHours } from '../models/jobs.schema';
+
+const numberString = z.string().regex(/^\d+$/).transform(Number);
 
 // eslint-disable-next-line consistent-return
 const dateSchema = z.preprocess(arg => {
@@ -37,3 +40,12 @@ export type JobFormData = z.infer<typeof jobPostSchema>;
 export const JobApplicationPostSchema = z.object({
   job: z.string(),
 });
+
+export const jobSearchSchema = z.object({
+  query: z.string(),
+  type: z.nativeEnum(JobSearchType),
+  page: numberString,
+  limit: numberString,
+});
+
+export type JobSearchData = z.infer<typeof jobSearchSchema>;
