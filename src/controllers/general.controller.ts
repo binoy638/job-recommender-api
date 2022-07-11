@@ -93,19 +93,25 @@ export const searchJobs = async (req: Request, res: Response, next: NextFunction
     }
 
     if (type === JobSearchType.SKILL) {
-      jobs = await Job.find({ requiredSkills: query })
-        .populate([{ path: 'employer', select: 'company' }, { path: 'category' }, { path: 'requiredSkills' }])
-        .skip(skipIndex)
-        .limit(limit)
-        .lean();
+      const skill = await Skill.findOne({ name: query });
+      if (skill) {
+        jobs = await Job.find({ requiredSkills: { $in: [skill._id] } })
+          .populate([{ path: 'employer', select: 'company' }, { path: 'category' }, { path: 'requiredSkills' }])
+          .skip(skipIndex)
+          .limit(limit)
+          .lean();
+      }
     }
 
     if (type === JobSearchType.CATEGORY) {
-      jobs = await Job.find({ category: query })
-        .populate([{ path: 'employer', select: 'company' }, { path: 'category' }, { path: 'requiredSkills' }])
-        .skip(skipIndex)
-        .limit(limit)
-        .lean();
+      const category = await JobCategory.findOne({ name: query });
+      if (category) {
+        jobs = await Job.find({ category: category._id })
+          .populate([{ path: 'employer', select: 'company' }, { path: 'category' }, { path: 'requiredSkills' }])
+          .skip(skipIndex)
+          .limit(limit)
+          .lean();
+      }
     }
 
     res.send({ jobs });
