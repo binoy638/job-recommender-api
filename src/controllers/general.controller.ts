@@ -178,7 +178,9 @@ export const getJobs = async (req: Request, res: Response, next: NextFunction): 
       .limit(Pagination.JOB_PAGE_SIZE)
       .lean();
 
-    res.send({ jobs });
+    const count = await Job.countDocuments();
+
+    res.send({ jobs, count });
   } catch (error) {
     logger.error(error);
     next(boom.internal(RequestResponse.SERVER_ERROR));
