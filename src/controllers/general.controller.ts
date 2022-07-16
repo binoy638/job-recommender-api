@@ -59,6 +59,7 @@ export const searchJobs = async (req: Request, res: Response, next: NextFunction
   const skipIndex = (page - 1) * limit;
 
   let jobs: JobDoc[] = [];
+  let count = 0;
   try {
     if (type === JobSearchType.JOB_TITLE) {
       jobs = await Job.find({ jobTitle: { $regex: query, $options: 'i' } })
@@ -66,6 +67,8 @@ export const searchJobs = async (req: Request, res: Response, next: NextFunction
         .skip(skipIndex)
         .limit(limit)
         .lean();
+
+      count = await Job.countDocuments({ jobTitle: { $regex: query, $options: 'i' } });
     }
     if (type === JobSearchType.COMPANY) {
       const employers = await Employer.find({ 'company.name': { $regex: query, $options: 'i' } });
@@ -77,6 +80,8 @@ export const searchJobs = async (req: Request, res: Response, next: NextFunction
           .skip(skipIndex)
           .limit(limit)
           .lean();
+
+        count = await Job.countDocuments({ employer: { $in: empIDs } });
       }
     }
     if (type === JobSearchType.LOCATION) {
@@ -89,6 +94,8 @@ export const searchJobs = async (req: Request, res: Response, next: NextFunction
           .skip(skipIndex)
           .limit(limit)
           .lean();
+
+        count = await Job.countDocuments({ employer: { $in: empIDs } });
       }
     }
 
@@ -100,6 +107,8 @@ export const searchJobs = async (req: Request, res: Response, next: NextFunction
           .skip(skipIndex)
           .limit(limit)
           .lean();
+
+        count = await Job.countDocuments({ requiredSkills: { $in: [skill._id] } });
       }
     }
 
@@ -111,10 +120,12 @@ export const searchJobs = async (req: Request, res: Response, next: NextFunction
           .skip(skipIndex)
           .limit(limit)
           .lean();
+
+        count = await Job.countDocuments({ category: category._id });
       }
     }
 
-    res.send({ jobs });
+    res.send({ jobs, count });
   } catch (error) {
     logger.error(error);
     next(boom.internal(RequestResponse.SERVER_ERROR));
