@@ -1,16 +1,7 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { ZodObject } from 'zod';
-
 export enum UserType {
   EMPLOYER = 'employer',
   JOBSEEKER = 'jobseeker',
   ADMIN = 'admin',
-}
-
-export interface RequestPayload {
-  body?: ZodObject<any>;
-  query?: ZodObject<any>;
-  params?: ZodObject<any>;
 }
 
 export enum RequestResponse {

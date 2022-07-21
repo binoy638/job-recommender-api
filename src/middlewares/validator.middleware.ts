@@ -1,11 +1,18 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import boom from '@hapi/boom';
 import { NextFunction, Request, Response } from 'express';
-import { z } from 'zod';
+import { z, ZodObject } from 'zod';
 
-import { RequestPayload, RequestResponse, UserType } from '../@types';
+import { RequestResponse, UserType } from '../@types';
 import logger from '../config/logger';
 import { employerPostSchema } from '../validators/employer.validator';
 import { jobseekerPostSchema } from '../validators/jobseeker.validator';
+
+export interface RequestPayload {
+  body?: ZodObject<any>;
+  query?: ZodObject<any>;
+  params?: ZodObject<any>;
+}
 
 export const validateRequest =
   (requestPayload: RequestPayload) =>
