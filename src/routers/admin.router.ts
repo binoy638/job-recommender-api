@@ -6,13 +6,26 @@ import * as adminController from '../controllers/admin.controller';
 import { getCurrentUser } from '../middlewares/currentUser.middleware';
 import { userTypeValidator } from '../middlewares/userTypeValidator.middleware';
 import { validateRequest } from '../middlewares/validator.middleware';
+import { numberString } from './generalRouter';
 
 const adminRouter = Router();
 
 const employerIdValidator = { params: z.object({ id: z.number() }) };
 const addSkillBodyValidator = { body: z.object({ name: z.string() }) };
 
-adminRouter.get('/employers', getCurrentUser, userTypeValidator(UserType.ADMIN), adminController.getEmployers);
+adminRouter.get(
+  '/employers',
+  getCurrentUser,
+  validateRequest({
+    query: z.object({
+      page: numberString,
+      limit: numberString,
+      filter: z.nativeEnum(adminController.EmployerFilter),
+    }),
+  }),
+  userTypeValidator(UserType.ADMIN),
+  adminController.getEmployers
+);
 
 adminRouter.put(
   '/employer/verify/:id',

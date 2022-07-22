@@ -7,7 +7,7 @@ import { jobSearchSchema } from '../validators/job.validator';
 
 const generalRouter = Router();
 
-const numberString = z.string().regex(/^\d+$/).transform(Number);
+export const numberString = z.string().regex(/^\d+$/).transform(Number);
 
 //* get all skills
 generalRouter.get(
