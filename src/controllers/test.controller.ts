@@ -32,7 +32,7 @@ export function createRandomEmployer(): Omit<EmployerAttrs, 'createdAt' | 'updat
         country: faker.address.country(),
       },
     },
-    isVerified: true,
+    isVerified: false,
     isBanned: false,
   };
 }

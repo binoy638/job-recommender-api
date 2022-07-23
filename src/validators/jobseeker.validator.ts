@@ -29,8 +29,8 @@ export const jobseekerPostSchema = z.object({
       role: z.string(),
       company: z.string(),
       startYear: z.number(),
-      endYear: z.number(),
-      description: z.string(),
+      endYear: z.number().optional(),
+      description: z.string().optional(),
     })
   ),
   resume: z.string().optional(),

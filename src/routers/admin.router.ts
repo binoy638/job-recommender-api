@@ -10,7 +10,7 @@ import { numberString } from './generalRouter';
 
 const adminRouter = Router();
 
-const employerIdValidator = { params: z.object({ id: z.number() }) };
+const employerIdValidator = { params: z.object({ id: numberString }) };
 const addSkillBodyValidator = { body: z.object({ name: z.string() }) };
 
 adminRouter.get(

@@ -50,7 +50,6 @@ export const submitApplication = async (req: Request, res: Response, next: NextF
 
     const application = new JobApplication({ ...body, jobSeeker: currentUser.id });
     const doc = await application.save();
-
     //* save the application id in the job document for easy access
     await Job.findByIdAndUpdate(body.job, { $push: { applications: doc._id } });
 
