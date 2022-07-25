@@ -43,7 +43,7 @@ app.use(
   })
 );
 
-//* regsiter routers
+//* register routers
 app.use('/api', generalRouter);
 app.use('/api/auth', authRouter);
 app.use('/api/admin', adminRouter);
