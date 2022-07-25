@@ -16,7 +16,7 @@ import authRouter from './routers/auth.router';
 import employerRouter from './routers/employer.route';
 import generalRouter from './routers/generalRouter';
 import jobseekerRouter from './routers/jobseeker.router';
-import testRouter from './routers/test.router';
+// import testRouter from './routers/test.router';
 
 dotenv.config();
 
@@ -51,7 +51,7 @@ app.use('/api/employer', employerRouter);
 app.use('/api/jobseeker', jobseekerRouter);
 
 // if (process.env.NODE_ENV === 'development') {
-app.use('/api/test', testRouter);
+//   app.use('/api/test', testRouter);
 // }
 
 app.listen(PORT, async () => {
