@@ -50,9 +50,9 @@ app.use('/api/admin', adminRouter);
 app.use('/api/employer', employerRouter);
 app.use('/api/jobseeker', jobseekerRouter);
 
-if (process.env.NODE_ENV === 'development') {
-  app.use('/api/test', testRouter);
-}
+// if (process.env.NODE_ENV === 'development') {
+app.use('/api/test', testRouter);
+// }
 
 app.listen(PORT, async () => {
   try {
