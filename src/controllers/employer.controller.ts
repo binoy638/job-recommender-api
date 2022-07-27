@@ -162,10 +162,23 @@ export const changeJobApplicationStatus = async (req: Request, res: Response, ne
 };
 
 export const createChat = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-  const { jobseeker } = req.body;
+  const { jobseeker, message } = req.body;
   const { currentUser } = req;
+
+  const msg = {
+    message,
+    sender: 'employer',
+  };
+
   try {
-    await Chat.create({ employer: currentUser.id, jobseeker });
+    const chatExist = await Chat.findOne({ employer: currentUser.id, jobseeker });
+
+    if (chatExist) {
+      await Chat.findOneAndUpdate({ employer: currentUser.id, jobseeker }, { $push: { messages: msg } });
+      res.sendStatus(204);
+      return;
+    }
+    await Chat.create({ employer: currentUser.id, jobseeker, messages: [msg] });
     res.sendStatus(201);
   } catch (error) {
     logger.error(error);

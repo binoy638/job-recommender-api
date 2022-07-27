@@ -90,7 +90,7 @@ employerRouter.post(
   '/chat/create',
   getCurrentUser,
   userTypeValidator(UserType.EMPLOYER),
-  validateRequest({ body: z.object({ jobseeker: z.string() }) }),
+  validateRequest({ body: z.object({ jobseeker: z.string(), message: z.string() }) }),
   employerController.createChat
 );
 
