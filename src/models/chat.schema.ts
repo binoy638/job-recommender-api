@@ -16,17 +16,22 @@ interface ChatDoc extends Document {
 const messageSchema = new Schema<Message>(
   {
     message: { type: String, required: true },
-    sender: { enum: ['employer', 'jobseeker'], required: true },
+    sender: { enum: ['employer', 'jobseeker'] },
     unread: { type: Boolean, default: true },
   },
   { timestamps: true }
 );
 
-const chatSchema = new Schema<ChatDoc>({
-  employer: { type: Schema.Types.ObjectId, ref: 'Employer', required: true },
-  jobseeker: { type: Schema.Types.ObjectId, ref: 'JobSeeker', required: true },
-  messages: { type: [messageSchema], default: [] },
-  isBlocked: { type: Boolean, default: false },
-});
+const chatSchema = new Schema<ChatDoc>(
+  {
+    employer: { type: Schema.Types.ObjectId, ref: 'Employer', required: true },
+    jobseeker: { type: Schema.Types.ObjectId, ref: 'JobSeeker', required: true },
+    messages: { type: [messageSchema], default: [] },
+    isBlocked: { type: Boolean, default: false },
+  },
+  {
+    timestamps: true,
+  }
+);
 
 export const Chat = model<ChatDoc>('Chat', chatSchema);

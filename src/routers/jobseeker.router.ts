@@ -45,4 +45,14 @@ jobseekerRouter.post(
   jobseekerController.sendMessage
 );
 
+jobseekerRouter.put(
+  '/chat/mark-as-read',
+  getCurrentUser,
+  userTypeValidator(UserType.JOBSEEKER),
+  validateRequest({ body: z.object({ id: z.string() }) }),
+  jobseekerController.maskAsReadMessage
+);
+
+jobseekerRouter.get('/chat', getCurrentUser, userTypeValidator(UserType.JOBSEEKER), jobseekerController.getChat);
+
 export default jobseekerRouter;

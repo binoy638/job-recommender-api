@@ -98,8 +98,18 @@ employerRouter.post(
   '/chat/send',
   getCurrentUser,
   userTypeValidator(UserType.EMPLOYER),
-  validateRequest({ body: z.object({ id: z.string(), message: z.string() }) }),
+  validateRequest({ body: z.object({ chatID: z.string(), message: z.string() }) }),
   employerController.sendMessage
 );
+
+employerRouter.put(
+  '/chat/mark-as-read',
+  getCurrentUser,
+  userTypeValidator(UserType.EMPLOYER),
+  validateRequest({ body: z.object({ chatID: z.string() }) }),
+  employerController.maskAsReadMessage
+);
+
+employerRouter.get('/chat', getCurrentUser, userTypeValidator(UserType.EMPLOYER), employerController.getChat);
 
 export default employerRouter;

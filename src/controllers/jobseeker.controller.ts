@@ -85,8 +85,33 @@ export const sendMessage = async (req: Request, res: Response, next: NextFunctio
     sender: 'jobseeker',
   };
   try {
-    await Chat.findByIdAndUpdate(body.id, { $push: { messages: msg } });
+    await Chat.findByIdAndUpdate(body.chatID, { $push: { messages: msg } });
     res.sendStatus(204);
+  } catch (error) {
+    logger.error(error);
+    next(boom.internal(RequestResponse.SERVER_ERROR));
+  }
+};
+
+export const maskAsReadMessage = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  const { body } = req;
+  try {
+    await Chat.findOneAndUpdate(
+      { _id: body.chatID, 'message.$.unread': false, 'message.$.sender': 'employer' },
+      { $set: { 'message.$.unread': true } }
+    );
+    res.sendStatus(204);
+  } catch (error) {
+    logger.error(error);
+    next(boom.internal(RequestResponse.SERVER_ERROR));
+  }
+};
+
+export const getChat = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  const { currentUser } = req;
+  try {
+    const chat = await Chat.find({ jobseeker: currentUser.id }).lean();
+    res.send(chat);
   } catch (error) {
     logger.error(error);
     next(boom.internal(RequestResponse.SERVER_ERROR));
