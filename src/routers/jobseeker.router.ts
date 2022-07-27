@@ -41,7 +41,7 @@ jobseekerRouter.post(
   '/chat/send',
   getCurrentUser,
   userTypeValidator(UserType.JOBSEEKER),
-  validateRequest({ body: z.object({ id: z.string(), message: z.string() }) }),
+  validateRequest({ body: z.object({ chatID: z.string(), message: z.string() }) }),
   jobseekerController.sendMessage
 );
 
@@ -49,7 +49,7 @@ jobseekerRouter.put(
   '/chat/mark-as-read',
   getCurrentUser,
   userTypeValidator(UserType.JOBSEEKER),
-  validateRequest({ body: z.object({ id: z.string() }) }),
+  validateRequest({ body: z.object({ chatID: z.string() }) }),
   jobseekerController.maskAsReadMessage
 );
 

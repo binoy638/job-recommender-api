@@ -2,7 +2,7 @@ import { Document, model, Schema } from 'mongoose';
 
 export interface Message {
   message: string;
-  sender: 'employer' | 'jobseeker';
+  sender: string;
   unread: boolean;
 }
 
@@ -16,7 +16,7 @@ interface ChatDoc extends Document {
 const messageSchema = new Schema<Message>(
   {
     message: { type: String, required: true },
-    sender: { enum: ['employer', 'jobseeker'] },
+    sender: { type: String, required: true },
     unread: { type: Boolean, default: true },
   },
   { timestamps: true }

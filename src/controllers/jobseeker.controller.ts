@@ -79,10 +79,10 @@ export const getJobSeekerProfile = async (req: Request, res: Response, next: Nex
 };
 
 export const sendMessage = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-  const { body } = req;
+  const { body, currentUser } = req;
   const msg = {
     message: body.message,
-    sender: 'jobseeker',
+    sender: currentUser.id,
   };
   try {
     await Chat.findByIdAndUpdate(body.chatID, { $push: { messages: msg } });
@@ -110,8 +110,13 @@ export const maskAsReadMessage = async (req: Request, res: Response, next: NextF
 export const getChat = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const { currentUser } = req;
   try {
-    const chat = await Chat.find({ jobseeker: currentUser.id }).lean();
-    res.send(chat);
+    const chat = await Chat.find({ jobseeker: currentUser.id })
+      .populate([
+        { path: 'jobseeker', select: 'firstName lastName' },
+        { path: 'employer', select: 'firstName lastName' },
+      ])
+      .lean();
+    res.send({ chat });
   } catch (error) {
     logger.error(error);
     next(boom.internal(RequestResponse.SERVER_ERROR));
