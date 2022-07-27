@@ -4,6 +4,7 @@ import { NextFunction, Request, Response } from 'express';
 
 import { RequestResponse } from '../@types';
 import logger from '../config/logger';
+import { Chat } from '../models/chat.schema';
 import { Employer } from '../models/employer.schema';
 import { JobApplication } from '../models/jobApplication.schema';
 import { Job, JobDoc } from '../models/jobs.schema';
@@ -153,6 +154,33 @@ export const changeJobApplicationStatus = async (req: Request, res: Response, ne
     //! check if the doc updated or not
     await JobApplication.findOneAndUpdate({ id }, { status });
 
+    res.sendStatus(204);
+  } catch (error) {
+    logger.error(error);
+    next(boom.internal(RequestResponse.SERVER_ERROR));
+  }
+};
+
+export const createChat = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  const { jobseeker } = req.body;
+  const { currentUser } = req;
+  try {
+    await Chat.create({ employer: currentUser.id, jobseeker });
+    res.sendStatus(201);
+  } catch (error) {
+    logger.error(error);
+    next(boom.internal(RequestResponse.SERVER_ERROR));
+  }
+};
+
+export const sendMessage = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  const { body } = req;
+  const msg = {
+    message: body.message,
+    sender: 'employer',
+  };
+  try {
+    await Chat.findByIdAndUpdate(body.id, { $push: { messages: msg } });
     res.sendStatus(204);
   } catch (error) {
     logger.error(error);

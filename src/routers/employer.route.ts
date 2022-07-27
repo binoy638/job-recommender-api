@@ -86,4 +86,20 @@ employerRouter.put(
   employerController.changeJobApplicationStatus
 );
 
+employerRouter.post(
+  '/chat/create',
+  getCurrentUser,
+  userTypeValidator(UserType.EMPLOYER),
+  validateRequest({ body: z.object({ jobseeker: z.string() }) }),
+  employerController.createChat
+);
+
+employerRouter.post(
+  '/chat/send',
+  getCurrentUser,
+  userTypeValidator(UserType.EMPLOYER),
+  validateRequest({ body: z.object({ id: z.string(), message: z.string() }) }),
+  employerController.sendMessage
+);
+
 export default employerRouter;

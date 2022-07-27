@@ -27,4 +27,4 @@ const chatSchema = new Schema<ChatDoc>({
   isBlocked: { type: Boolean, default: false },
 });
 
-export const Chat = model<ChatDoc>('Skill', chatSchema);
+export const Chat = model<ChatDoc>('Chat', chatSchema);

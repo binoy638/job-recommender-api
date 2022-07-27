@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import { z } from 'zod';
 
 import { UserType } from '../@types';
 import * as jobseekerController from '../controllers/jobseeker.controller';
@@ -35,5 +36,13 @@ jobseekerRouter.put(
 );
 
 jobseekerRouter.get('/profile/:id', validateRequest({ params: ID }), jobseekerController.getJobSeekerProfile);
+
+jobseekerRouter.post(
+  '/chat/send',
+  getCurrentUser,
+  userTypeValidator(UserType.JOBSEEKER),
+  validateRequest({ body: z.object({ id: z.string(), message: z.string() }) }),
+  jobseekerController.sendMessage
+);
 
 export default jobseekerRouter;

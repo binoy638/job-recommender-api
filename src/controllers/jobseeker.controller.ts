@@ -3,6 +3,7 @@ import { NextFunction, Request, Response } from 'express';
 
 import { RequestResponse } from '../@types';
 import logger from '../config/logger';
+import { Chat } from '../models/chat.schema';
 import { JobApplication } from '../models/jobApplication.schema';
 import { Job } from '../models/jobs.schema';
 import { JobSeeker } from '../models/jobseekers.schema';
@@ -71,6 +72,21 @@ export const getJobSeekerProfile = async (req: Request, res: Response, next: Nex
     }
 
     res.send({ profile: jobseeker });
+  } catch (error) {
+    logger.error(error);
+    next(boom.internal(RequestResponse.SERVER_ERROR));
+  }
+};
+
+export const sendMessage = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  const { body } = req;
+  const msg = {
+    message: body.message,
+    sender: 'jobseeker',
+  };
+  try {
+    await Chat.findByIdAndUpdate(body.id, { $push: { messages: msg } });
+    res.sendStatus(204);
   } catch (error) {
     logger.error(error);
     next(boom.internal(RequestResponse.SERVER_ERROR));
