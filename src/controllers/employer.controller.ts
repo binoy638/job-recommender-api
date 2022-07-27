@@ -187,3 +187,14 @@ export const sendMessage = async (req: Request, res: Response, next: NextFunctio
     next(boom.internal(RequestResponse.SERVER_ERROR));
   }
 };
+
+export const readChat = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  const { body } = req;
+  try {
+    await Chat.findOneAndUpdate({ _id: body.id, 'message.$.unread': false }, { $set: { 'message.$.unread': true } });
+    res.sendStatus(204);
+  } catch (error) {
+    logger.error(error);
+    next(boom.internal(RequestResponse.SERVER_ERROR));
+  }
+};
