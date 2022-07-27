@@ -28,7 +28,7 @@ export const getApplications = async (req: Request, res: Response, next: NextFun
     const applications = await JobApplication.find({ jobSeeker: currentUser.id })
       .select('id job status createdAt')
       .populate([
-        { path: 'job', select: 'jobTitle employer applications', populate: { path: 'employer', select: 'company' } },
+        { path: 'job', select: 'id jobTitle employer applications', populate: { path: 'employer', select: 'company' } },
       ])
       .lean();
     res.send({ applications });
