@@ -204,11 +204,13 @@ export const sendMessage = async (req: Request, res: Response, next: NextFunctio
 };
 
 export const maskAsReadMessage = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-  const { body } = req;
+  const { body, currentUser } = req;
   try {
+    const s = await Chat.findById(body.chatID);
+    console.log(s);
     await Chat.findOneAndUpdate(
-      { _id: body.id, 'message.$.unread': false, 'message.$.sender': 'jobseeker' },
-      { $set: { 'message.$.unread': true } }
+      { _id: body.chatID, 'messages.unread': true, 'messages.sender': { $ne: currentUser.id } },
+      { $set: { 'messages.$.unread': false } }
     );
     res.sendStatus(204);
   } catch (error) {
