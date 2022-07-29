@@ -6,6 +6,7 @@ import { RequestResponse } from '../@types';
 import logger from '../config/logger';
 import { Employer } from '../models/employer.schema';
 import { JobCategory } from '../models/jobCategories.schema';
+import { Job } from '../models/jobs.schema';
 import { Skill } from '../models/skills.schema';
 
 export enum EmployerFilter {
@@ -108,6 +109,22 @@ export const getEmployers = async (req: Request, res: Response, next: NextFuncti
       .lean(true);
     const count = await Employer.countDocuments(queryFilter);
     res.status(200).send({ employers, count });
+  } catch (error) {
+    logger.error(error);
+    next(boom.internal(RequestResponse.SERVER_ERROR));
+  }
+};
+
+export const getEmployer = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  const { id } = req.params;
+  try {
+    const employer = await Employer.findOne({ id }).select('-password -__v -_id').lean();
+    if (!employer) {
+      next(boom.notFound("Employer doesn't exist"));
+      return;
+    }
+    const jobs = await Job.find({ employer: employer._id }).populate('applications').lean();
+    res.send({ employer, jobs });
   } catch (error) {
     logger.error(error);
     next(boom.internal(RequestResponse.SERVER_ERROR));

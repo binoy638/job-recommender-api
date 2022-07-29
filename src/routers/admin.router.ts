@@ -35,6 +35,14 @@ adminRouter.put(
   adminController.verifyEmployer
 );
 
+adminRouter.get(
+  '/employer/:id',
+  getCurrentUser,
+  userTypeValidator(UserType.ADMIN),
+  validateRequest({ params: z.object({ id: numberString }) }),
+  adminController.getEmployer
+);
+
 adminRouter.put(
   '/employer/ban/:id',
   getCurrentUser,
