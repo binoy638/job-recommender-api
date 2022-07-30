@@ -21,6 +21,8 @@ adminRouter.get(
       page: numberString,
       limit: numberString,
       filter: z.nativeEnum(adminController.EmployerFilter),
+      searchFilter: z.enum(['name', 'email', 'phone', 'id', 'company']).optional(),
+      searchQuery: z.string().optional(),
     }),
   }),
   userTypeValidator(UserType.ADMIN),

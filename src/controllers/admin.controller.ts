@@ -83,21 +83,37 @@ export const getEmployers = async (req: Request, res: Response, next: NextFuncti
   const page = req.query.page as unknown as number;
   const limit = req.query.limit as unknown as number;
   const filter = req.query.filter as unknown as EmployerFilter;
+  const searchFilter = req.query.searchFilter as unknown as string;
+  const searchQuery = req.query.searchQuery as unknown as string;
 
   const skipIndex = (page - 1) * limit;
 
-  let queryFilter: { isVerified?: boolean; isBanned?: boolean } = {};
+  let searchFilterMongo: Record<string, unknown> = {};
+  if (searchFilter === 'name' && searchQuery.length > 0) {
+    searchFilterMongo = { firstName: { $regex: searchQuery, $options: 'i' } };
+  }
+  if (searchFilter === 'email' && searchQuery.length > 0) {
+    searchFilterMongo = { email: { $regex: searchQuery, $options: 'i' } };
+  }
+  if (searchFilter === 'phone' && searchQuery.length > 0) {
+    searchFilterMongo = { phone: { $regex: searchQuery, $options: 'i' } };
+  }
+  if (searchFilter === 'company' && searchQuery.length > 0) {
+    searchFilterMongo = { 'company.name': { $regex: searchQuery, $options: 'i' } };
+  }
+
+  let queryFilter: Record<string, unknown> = { ...searchFilterMongo };
   if (filter === EmployerFilter.VERIFIED) {
-    queryFilter = { isVerified: true };
+    queryFilter = { ...queryFilter, isVerified: true };
   }
   if (filter === EmployerFilter.UNVERIFIED) {
-    queryFilter = { isVerified: false };
+    queryFilter = { ...queryFilter, isVerified: false };
   }
   if (filter === EmployerFilter.BANNED) {
-    queryFilter = { isBanned: true };
+    queryFilter = { ...queryFilter, isBanned: true };
   }
   if (filter === EmployerFilter.UNBANNED) {
-    queryFilter = { isBanned: false };
+    queryFilter = { ...queryFilter, isBanned: false };
   }
 
   try {
@@ -118,7 +134,7 @@ export const getEmployers = async (req: Request, res: Response, next: NextFuncti
 export const getEmployer = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const { id } = req.params;
   try {
-    const employer = await Employer.findOne({ id }).select('-password -__v -_id').lean();
+    const employer = await Employer.findOne({ id }).select('-password -__v').lean();
     if (!employer) {
       next(boom.notFound("Employer doesn't exist"));
       return;
