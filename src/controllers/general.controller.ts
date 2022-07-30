@@ -1,7 +1,7 @@
 import boom from '@hapi/boom';
 import { NextFunction, Request, Response } from 'express';
 
-import { JobSearchType, Pagination, RequestResponse } from '../@types';
+import { JobSearchType, Pagination, RequestResponse, UserType } from '../@types';
 import logger from '../config/logger';
 import { City } from '../models/city-state-country/city.schema';
 import { Country } from '../models/city-state-country/country.schema';
@@ -9,6 +9,7 @@ import { State } from '../models/city-state-country/state.schema';
 import { Employer } from '../models/employer.schema';
 import { JobCategory } from '../models/jobCategories.schema';
 import { Job, JobDoc } from '../models/jobs.schema';
+import { JobSeeker } from '../models/jobseekers.schema';
 import { Skill } from '../models/skills.schema';
 import { JobSearchData } from '../validators/job.validator';
 
@@ -180,16 +181,37 @@ export const getCitiesByState = async (req: Request, res: Response, next: NextFu
 };
 
 export const getJobs = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-  const { page } = req.query;
+  const { currentUser, query } = req;
+  const { page } = query;
   const skipCount = (Number(page) - 1) * Number(Pagination.JOB_PAGE_SIZE);
   try {
-    const jobs = await Job.find()
+    let dbQuery = Job.find()
       .populate([{ path: 'employer', select: 'company' }, { path: 'category' }, { path: 'requiredSkills' }])
       .skip(skipCount)
       .limit(Pagination.JOB_PAGE_SIZE)
       .lean();
 
-    const count = await Job.countDocuments();
+    let countFilter = {};
+    //* if the user is logged in as job seeker send only jobs that match his profile
+    if (currentUser && currentUser.utype === UserType.JOBSEEKER) {
+      const jobSeeker = await JobSeeker.findOne({ _id: currentUser.id });
+      if (jobSeeker) {
+        dbQuery = Job.find({
+          // category: { $in: jobSeeker.jobPreferences },
+          requiredSkills: { $in: jobSeeker.skills },
+        })
+          .populate([{ path: 'employer', select: 'company' }, { path: 'category' }, { path: 'requiredSkills' }])
+          .skip(skipCount)
+          .limit(Pagination.JOB_PAGE_SIZE)
+          .lean();
+
+        countFilter = { category: { $in: jobSeeker.jobPreferences } };
+      }
+    }
+
+    const jobs = await dbQuery;
+
+    const count = await Job.countDocuments(countFilter);
 
     res.send({ jobs, count });
   } catch (error) {

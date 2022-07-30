@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { z } from 'zod';
 
 import * as generalController from '../controllers/general.controller';
+import { getCurrentUserOptional } from '../middlewares/currentUser.middleware';
 import { validateRequest } from '../middlewares/validator.middleware';
 import { jobSearchSchema } from '../validators/job.validator';
 
@@ -27,6 +28,7 @@ generalRouter.get('/job-categories', generalController.getJobCategories);
 
 generalRouter.get(
   '/jobs',
+  getCurrentUserOptional,
   validateRequest({
     query: z.object({ page: numberString, category: z.string().optional() }),
   }),

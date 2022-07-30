@@ -35,3 +35,18 @@ export const getCurrentUser = async (req: Request, res: Response, next: NextFunc
     next(boom.unauthorized('Not authorized'));
   }
 };
+
+export const getCurrentUserOptional = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  if (!req.session?.jwt) {
+    next();
+    return;
+  }
+
+  try {
+    const payload = jwt.verify(req.session.jwt, process.env.JWT_SECRET!) as UserPayload;
+    req.currentUser = payload;
+  } catch (error) {
+    logger.error(error);
+  }
+  next();
+};

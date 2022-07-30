@@ -1,7 +1,7 @@
 import boom from '@hapi/boom';
 import { NextFunction, Request, Response } from 'express';
 
-import { RequestResponse } from '../@types';
+import { Pagination, RequestResponse } from '../@types';
 import logger from '../config/logger';
 import { Chat } from '../models/chat.schema';
 import { JobApplication } from '../models/jobApplication.schema';
@@ -117,6 +117,31 @@ export const getChat = async (req: Request, res: Response, next: NextFunction): 
       ])
       .lean();
     res.send({ chat });
+  } catch (error) {
+    logger.error(error);
+    next(boom.internal(RequestResponse.SERVER_ERROR));
+  }
+};
+
+export const getJobRecommendations = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  const { page } = req.query;
+  const skipCount = (Number(page) - 1) * Number(Pagination.JOB_PAGE_SIZE);
+  const { currentUser } = req;
+  try {
+    const jobSeeker = await JobSeeker.findOne({ id: currentUser.id });
+    if (!jobSeeker) {
+      next(boom.notFound('JobSeeker not found'));
+      return;
+    }
+    const recommendedJobs = await Job.find({
+      category: { $in: jobSeeker.jobPreferences },
+      // requiredSkills: { $in: jobSeeker.skills },
+    })
+      .populate([{ path: 'employer', select: 'company' }, { path: 'category' }, { path: 'requiredSkills' }])
+      .skip(skipCount)
+      .limit(Pagination.JOB_PAGE_SIZE)
+      .lean();
+    res.send({ recommendedJobs });
   } catch (error) {
     logger.error(error);
     next(boom.internal(RequestResponse.SERVER_ERROR));
