@@ -57,18 +57,6 @@ app.listen(PORT, async () => {
     await connectMongo();
     logger.info(`Listening at http://localhost:${PORT}`);
 
-    // const j = await Job.find().populate({ path: 'requiredSkills', match: { name: 'MongoDB' }, select: 'name' });
-    // const j = await Skill.find({ name: { $regex: 'on', $options: 'i' } }).lean();
-    // console.log(j);
-
-    // const emps = [];
-
-    // for (let i = 0; i < 100; i++) {
-    //   const e = createRandomEmployer();
-    //   emps.push(e);
-    // }
-    // await Employer.insertMany(emps);
-
     if (!process.env.ADMIN_EMAIL || !process.env.ADMIN_PASSWORD || !process.env.JWT_SECRET) {
       throw new Error('Env variables missing');
     } else {

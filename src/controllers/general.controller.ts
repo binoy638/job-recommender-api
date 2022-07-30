@@ -195,9 +195,10 @@ export const getJobs = async (req: Request, res: Response, next: NextFunction): 
     //* if the user is logged in as job seeker send only jobs that match his profile
     if (currentUser && currentUser.utype === UserType.JOBSEEKER) {
       const jobSeeker = await JobSeeker.findOne({ _id: currentUser.id });
+
       if (jobSeeker) {
         dbQuery = Job.find({
-          // category: { $in: jobSeeker.jobPreferences },
+          category: { $in: jobSeeker.jobPreferences },
           requiredSkills: { $in: jobSeeker.skills },
         })
           .populate([{ path: 'employer', select: 'company' }, { path: 'category' }, { path: 'requiredSkills' }])

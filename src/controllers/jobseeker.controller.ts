@@ -128,7 +128,7 @@ export const getJobRecommendations = async (req: Request, res: Response, next: N
   const skipCount = (Number(page) - 1) * Number(Pagination.JOB_PAGE_SIZE);
   const { currentUser } = req;
   try {
-    const jobSeeker = await JobSeeker.findOne({ id: currentUser.id });
+    const jobSeeker = await JobSeeker.findOne({ id: currentUser.id }).populate('jobPreferences');
     if (!jobSeeker) {
       next(boom.notFound('JobSeeker not found'));
       return;
