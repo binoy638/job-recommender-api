@@ -28,7 +28,7 @@ const app = express();
 //* Middilewares
 app.use(helmet());
 app.use(morgan('common'));
-app.use(cors({ origin: true, credentials: true }));
+app.use(cors({ origin: ['http://localhost:3000', process.env.ORIGIN_URL!], credentials: true }));
 app.use(express.json());
 app.set('trust proxy', true);
 
