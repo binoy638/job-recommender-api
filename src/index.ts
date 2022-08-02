@@ -27,9 +27,7 @@ const app = express();
 
 //* Middilewares
 app.use(helmet());
-if (process.env.NODE_ENV === 'development') {
-  app.use(morgan('common'));
-}
+app.use(morgan('common'));
 app.use(cors({ origin: true, credentials: true }));
 app.use(express.json());
 app.set('trust proxy', true);
