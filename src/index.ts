@@ -16,6 +16,7 @@ import authRouter from './routers/auth.router';
 import employerRouter from './routers/employer.route';
 import generalRouter from './routers/generalRouter';
 import jobseekerRouter from './routers/jobseeker.router';
+
 // import testRouter from './routers/test.router';
 
 dotenv.config();
@@ -35,9 +36,11 @@ app.set('trust proxy', true);
 
 app.use(
   cookieSession({
-    signed: false,
-    expires: new Date(Date.now() + 60 * 60 * 1000 * 24),
-    secure: process.env.NODE_ENV !== 'development',
+    secret: process.env.COOKIE_SECRET!,
+    maxAge: 24 * 60 * 60 * 1000 * 7,
+    sameSite: 'none',
+    secure: true,
+    httpOnly: true,
   })
 );
 
@@ -52,8 +55,6 @@ app.listen(PORT, async () => {
   try {
     await connectMongo();
     logger.info(`Listening at http://localhost:${PORT}`);
-
-    // await Job.findOneAndUpdate({ id: 379686568239 }, { description :});
 
     if (!process.env.ADMIN_EMAIL || !process.env.ADMIN_PASSWORD || !process.env.JWT_SECRET) {
       throw new Error('Env variables missing');

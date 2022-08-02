@@ -1,3 +1,4 @@
+/* eslint-disable unicorn/new-for-builtins */
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable consistent-return */
 /* eslint-disable unicorn/numeric-separators-style */
@@ -7,6 +8,7 @@ import { Schema } from 'mongoose';
 import { Employer } from '../models/employer.schema';
 import { JobCategory } from '../models/jobCategories.schema';
 import { JobAttrs, JobMode, WorkHours } from '../models/jobs.schema';
+import { JobSeekerAttrs } from '../models/jobseekers.schema';
 import { Skill } from '../models/skills.schema';
 import { generateID } from './generateID';
 
@@ -64,3 +66,72 @@ export const createRandomJob = async (): Promise<Partial<JobAttrs>> => {
 // export const generateJobs = () => {
 
 // }
+
+const degrees = [
+  'Bachelors in Computer Science and IT',
+  'Bachelors in Electrical Engineering',
+  'Bachelors in Civil Engineering and Construction',
+  'Bachelors in Medicine',
+  'Bachelors in Architecture',
+  'Bachelors in Design',
+  'Bachelors in International Relations',
+  'Bachelors in Language Studies',
+  'Masters in Computer Science and IT',
+  'Masters in Electrical Engineering',
+  'Masters in Civil Engineering and Construction',
+  'Masters in Medicine',
+  'Masters in Architecture',
+  'Masters in Design',
+  'Masters in International Relations',
+  'Masters in Language Studies',
+];
+
+const generateEdu = () => {
+  return {
+    degree: degrees[Math.floor(Math.random() * degrees.length)],
+    institute: faker.company.companyName(),
+    startYear: faker.date.past().getFullYear(),
+    endYear: faker.date.past().getFullYear(),
+    percentage: Math.floor(Math.random() * 100),
+  };
+};
+
+const generateExp = () => {
+  return {
+    role: faker.name.jobTitle(),
+    company: faker.company.companyName(),
+    startYear: faker.date.past().getFullYear(),
+    endYear: faker.date.past().getFullYear(),
+    description: faker.lorem.paragraph(),
+  };
+};
+
+export const createRandomJobSeeker = async (): Promise<Omit<JobSeekerAttrs, 'createdAt' | 'updatedAt'>> => {
+  const categories = await JobCategory.aggregate([{ $sample: { size: randomNumber(1, 3) } }]);
+  const jobPreferences = categories.map(cat => cat._id);
+  const skillsDocs = await Skill.aggregate([{ $sample: { size: randomNumber(1, 10) } }]);
+  const skills = skillsDocs.map(skill => skill._id);
+
+  const education = [...Array(randomNumber(1, 4))].map(() => generateEdu());
+  const experience = [...Array(randomNumber(0, 3))].map(() => generateExp());
+
+  return {
+    // id: generateID(),
+    firstName: faker.name.firstName(),
+    lastName: faker.name.lastName(),
+    email: faker.internet.email(),
+    password: faker.internet.password(),
+    phone: faker.phone.phoneNumber('##########'),
+    dob: faker.date.past() as unknown as Schema.Types.Date,
+    address: {
+      city: faker.address.city(),
+      state: faker.address.state(),
+      country: faker.address.country(),
+    },
+    about: faker.lorem.paragraph(),
+    education,
+    experience,
+    skills,
+    jobPreferences,
+  };
+};
