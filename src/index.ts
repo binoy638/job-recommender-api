@@ -48,14 +48,12 @@ app.use('/api/admin', adminRouter);
 app.use('/api/employer', employerRouter);
 app.use('/api/jobseeker', jobseekerRouter);
 
-// if (process.env.NODE_ENV === 'development') {
-//   app.use('/api/test', testRouter);
-// }
-
 app.listen(PORT, async () => {
   try {
     await connectMongo();
     logger.info(`Listening at http://localhost:${PORT}`);
+
+    // await Job.findOneAndUpdate({ id: 379686568239 }, { description :});
 
     if (!process.env.ADMIN_EMAIL || !process.env.ADMIN_PASSWORD || !process.env.JWT_SECRET) {
       throw new Error('Env variables missing');
