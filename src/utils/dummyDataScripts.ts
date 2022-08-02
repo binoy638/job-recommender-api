@@ -15,7 +15,7 @@ import { generateID } from './generateID';
 const description =
   '<p><strong>Responsibilities :</strong></p><p><br></p><p><br></p><ul><li>Coding complex modules</li><li>Code review and enforcing best practices</li><li>Improve Application architecture</li><li>Constantly improve his/her own skill set</li><li>Customizations to existing open source or custom built applications</li><li>Building a knowledge base of the latest programming trends, best practices, and methodologies</li></ul><p><strong>Education &amp; Experience:</strong></p><ul><li>Experience in Javascript frameworks (Node.js, Angular.js/Reactjs)</li><li>Relevant Experience should be 3-6 years</li><li>B.Tech/ BCA/ MCA or M.Tech</li><li>Impeccable written and verbal communication skills with the ability to present, explain and defend design concepts in team and stakeholder meetings</li><li>Experience representing work to a broader product team and other leaders, clearly and succinctly articulating the goals and concepts</li><li>Knowledge of Typescript and Loopback.io would be an added advantage</li></ul><p><strong><u>Personal Characteristics:</u></strong></p><ul><li>Strong portfolio and excellent attitude</li><li>Must be self-confident to work in a team and individually</li><li>Ability to drive the project with the team</li><li>Detail oriented and ability to organize</li><li>Problem-solving and innovation skills are a must</li><li>Delivery oriented and able to work under strict deadlines</li><li>Strong communication skills</li></ul><p><br></p>';
 
-function randomNumber(min: number, max: number) {
+export function randomNumber(min: number, max: number) {
   return Math.floor(Math.random() * (max - min) + min);
 }
 

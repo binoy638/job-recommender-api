@@ -138,7 +138,6 @@ export const getJobApplication = async (req: Request, res: Response, next: NextF
   const { id } = req.params;
   try {
     const application = await JobApplication.findOne({ id }).lean();
-
     res.send({ application });
   } catch (error) {
     logger.error(error);
@@ -148,11 +147,14 @@ export const getJobApplication = async (req: Request, res: Response, next: NextF
 
 export const changeJobApplicationStatus = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const { id } = req.params;
-  const { status } = req.body;
-
+  const { status, jobID } = req.body;
   try {
-    //! check if the doc updated or not
-    await JobApplication.findOneAndUpdate({ id }, { status });
+    const job = await Job.findOne({ id: jobID }).lean();
+    if (!job) {
+      next(boom.notFound('Job not found'));
+      return;
+    }
+    await JobApplication.findOneAndUpdate({ job: job._id, id: Number(id) }, { status });
 
     res.sendStatus(204);
   } catch (error) {

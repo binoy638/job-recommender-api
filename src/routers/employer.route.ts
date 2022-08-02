@@ -82,7 +82,7 @@ employerRouter.put(
   '/job/application/update-status/:id',
   getCurrentUser,
   userTypeValidator(UserType.EMPLOYER),
-  validateRequest({ params: ID, body: z.object({ status: z.nativeEnum(ApplicationStatus) }) }),
+  validateRequest({ params: ID, body: z.object({ status: z.nativeEnum(ApplicationStatus), jobID: z.string() }) }),
   employerController.changeJobApplicationStatus
 );
 
