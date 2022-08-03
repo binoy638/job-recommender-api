@@ -17,8 +17,6 @@ import employerRouter from './routers/employer.route';
 import generalRouter from './routers/generalRouter';
 import jobseekerRouter from './routers/jobseeker.router';
 
-// import testRouter from './routers/test.router';
-
 dotenv.config();
 
 const PORT = process.env.PORT || 8080;
@@ -51,33 +49,6 @@ app.listen(PORT, async () => {
   try {
     await connectMongo();
     logger.info(`Listening at http://localhost:${PORT}`);
-
-    // const employerID = '62dba22437bcbf3bd5422052';
-
-    // for (let i = 0; i < 20; i++) {
-    //   const jobSeekersDoc = await JobSeeker.aggregate([{ $sample: { size: randomNumber(1, 25) } }]);
-
-    //   const jobSeekers = jobSeekersDoc.map(jobSeeker => jobSeeker._id);
-
-    //   const Jobs = await Job.find({ employer: employerID });
-
-    //   const jobIDs = Jobs.map(job => job._id);
-    //   const jsID = jobSeekers[randomNumber(0, jobSeekers.length)];
-    //   const jobID = jobIDs[randomNumber(0, jobIDs.length)];
-
-    //   const existingApplication = await JobApplication.findOne({ job: jobID, jobSeeker: jsID });
-    //   if (!existingApplication) {
-    //     console.log('here');
-    //     const ja = new JobApplication({
-    //       id: generateID(),
-    //       job: jobID,
-    //       jobSeeker: jsID,
-    //     });
-    //     await ja.save();
-
-    //     await Job.findByIdAndUpdate(jobID, { $push: { applications: ja._id } });
-    //   }
-    // }
 
     if (!process.env.ADMIN_EMAIL || !process.env.ADMIN_PASSWORD || !process.env.JWT_SECRET) {
       throw new Error('Env variables missing');
