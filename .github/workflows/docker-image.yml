@@ -1,0 +1,35 @@
+name: Docker image runner
+
+on:
+  push:
+    branches: [master]
+
+jobs:
+  build:
+    runs-on: self-hosted
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Create env file
+        env:
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          MONGO_URI: ${{ secrets.MONGO_URI }}
+          ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
+          ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
+          COOKIE_SECRET: ${{ secrets.COOKIE_SECRET }}
+          ORIGIN_URL: ${{ secrets.ORIGIN_URL }}
+        run: |
+          cat <<EOF > .env
+          JWT_SECRET=$JWT_SECRET
+          ADMIN_EMAIL=$ADMIN_EMAIL
+          MONGO_URI=$MONGO_URI
+          ADMIN_PASSWORD=$ADMIN_PASSWORD
+          COOKIE_SECRET=$COOKIE_SECRET
+          ORIGIN_URL=$ORIGIN_URL
+          EOF
+          echo "cat .env"
+          cat .env
+
+      - name: Rebuild Image and start container
+        run: sudo docker-compose up -d --build

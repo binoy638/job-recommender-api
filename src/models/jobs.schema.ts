@@ -20,7 +20,7 @@ interface Salary {
 
 export interface JobAttrs {
   jobTitle: string;
-  employer: string;
+  employer: Schema.Types.ObjectId;
   requiredSkills: Schema.Types.ObjectId[];
   mode: JobMode;
   numberOfOpenings: number;

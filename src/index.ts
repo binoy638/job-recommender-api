@@ -19,7 +19,9 @@ import jobseekerRouter from './routers/jobseeker.router';
 
 dotenv.config();
 
-const PORT = process.env.PORT || 8080;
+const isDevelopment = process.env.NODE_ENV === 'development';
+
+const PORT = process.env.PORT || 5000;
 
 const app = express();
 
@@ -32,9 +34,11 @@ app.set('trust proxy', true);
 
 app.use(
   cookieSession({
-    signed: false,
-    expires: new Date(Date.now() + 60 * 60 * 1000 * 24),
-    secure: false,
+    secret: process.env.COOKIE_SECRET!,
+    maxAge: 24 * 60 * 60 * 1000 * 7,
+    sameSite: 'none',
+    secure: !isDevelopment,
+    httpOnly: !isDevelopment,
   })
 );
 

@@ -5,7 +5,9 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: express-app-prod
-    ports:
-      - "8080:8080"
+    container_name: jobfinder-api
 
+
+networks:
+  nginx-network:
+    external: true
