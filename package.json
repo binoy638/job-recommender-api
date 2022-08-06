@@ -15,8 +15,7 @@
     "format": "prettier -w \"**/*.{js,ts,json}\"",
     "lint": "eslint --fix ./src/*",
     "prepare": "husky install",
-    "pre-commit": "npm run typecheck && lint-staged && jest && npm run build",
-    "postinstall": "npm run build"
+    "pre-commit": "npm run typecheck && lint-staged && jest && npm run build"
   },
   "lint-staged": {
     "src/**/*.{js,ts}": "eslint --fix",
