@@ -19,8 +19,6 @@ import jobseekerRouter from './routers/jobseeker.router';
 
 dotenv.config();
 
-const isDevelopment = process.env.NODE_ENV === 'development';
-
 const PORT = process.env.PORT || 5000;
 
 const app = express();
@@ -28,17 +26,15 @@ const app = express();
 //* Middilewares
 app.use(helmet());
 app.use(morgan('common'));
-app.use(cors({ origin: true, credentials: true }));
+app.use(cors({ origin: '*', credentials: true }));
 app.use(express.json());
 app.set('trust proxy', true);
 
 app.use(
   cookieSession({
-    secret: process.env.COOKIE_SECRET!,
     maxAge: 24 * 60 * 60 * 1000 * 7,
     sameSite: 'none',
-    secure: !isDevelopment,
-    httpOnly: !isDevelopment,
+    secure: false,
   })
 );
 
