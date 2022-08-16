@@ -1,41 +1,76 @@
-# Starter Express app with typescript
 
-## Running the app in the development mode
+# JobFinder - Online Job Recommender (API)
 
-Run the following command to launch the project in dev mode
+JobFinder is a web app which allows Employers to post jobs and Job seekers to search and apply to those jobs.
+
+## Run Locally with Docker
+
+Clone the project
+
+```bash
+  git clone https://github.com/binoy638/job-recommender-api
+```
+
+Go to the project directory
+
+```bash
+  cd job-recommender-api
+```
+
+Run the project using docker-compose
+
+```bash
+  docker-compose -f docker-compose.dev.yml up --build
+```
+
+## Run Locally without Docker
+
+Make sure you have ffmpeg, rabbitMQ and mongoDB installed locally before following the below steps.
+
+Clone the project
+
+```bash
+  git clone https://github.com/binoy638/job-recommender-api
+```
+
+Go to the project directory
+
+```bash
+  cd job-recommender-api
+```
+
+Install dependencies
+
+```bash
+  npm install
+```
+
+Start the server
 
 ```bash
   npm run dev
 ```
 
-## Building the app for production
+## Environment Variables
 
-Run the following command to build the project
+To run this project, you will need to add the following environment variables to your .env.local file
 
-```bash
-  npm run build
-```
+`MONGO_URI`
 
-## Docker for development
+`JWT_SECRET`
 
-Run the following command to launch the project inside a docker container
+`COOKIE_SECRET`
 
-```bash
-  docker-compose -f docker-compose.dev.yml up
-```
+`ADMIN_USER`
 
-## Docker for Production
+`ADMIN_PASSWORD`
 
-Run the following command build & run a distroless docker container for production
+`ORIGIN_URL`
 
-```bash
-  docker-compose up
-```
+## Related
 
-### Note
+Here is the client [repo](https://github.com/binoy638/job-recommender-client).
 
-To setup [husky](https://www.npmjs.com/package/husky) & [lint-staged](https://www.npmjs.com/package/lint-staged) for pre-commit hook run
+## License
 
-```bash
-  npm run install:husky
-```
+[MIT](https://choosealicense.com/licenses/mit/)
